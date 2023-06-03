@@ -30,13 +30,24 @@ namespace AutoFix
         protected void UpdateCollection<T>(AppDbContext ctx, IEnumerable<T> inDb, IEnumerable<T> updated) where T : Entity
         {
             ctx.RemoveRange(inDb.Except(updated, EqualityComparer));
-            ctx.AddRange(updated.Except(inDb, EqualityComparer));
+            foreach (var entity in updated)
+            {
+                entity.OnSave(ctx);
+                entity.Upsert(ctx);
+            }
+        }
+
+        public void Upsert(AppDbContext ctx)
+        {
+            ctx.Entry(this).State = Id == 0
+                ? EntityState.Added
+                : EntityState.Modified;
         }
 
         public static EntityEqualityComparer EqualityComparer { get; } = new();
         public class EntityEqualityComparer : IEqualityComparer<Entity>
         {
-            public bool Equals(Entity? x, Entity? y) => x?.Id == y?.Id;
+            public bool Equals(Entity? x, Entity? y) => x?.Id != 0 && x?.Id != 0 && x?.Id == y?.Id;
             public int GetHashCode(Entity obj) => obj.Id.GetHashCode();
         }
 

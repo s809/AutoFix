@@ -13,10 +13,5 @@ namespace AutoFix
         public decimal Amount { get; set; }
         [Required]
         public string Reason { get; set; } = "";
-
-        public override void OnSave(AppDbContext ctx)
-        {
-            EmployeeId = Employee!.Id;
-        }
     }
 }

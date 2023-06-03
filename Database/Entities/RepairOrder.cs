@@ -60,13 +60,8 @@ namespace AutoFix
         {
             MasterId = Master!.Id;
 
-            UpdateCollection(ctx, ctx.ServiceHistory.Where(sh => sh.Id == Id), History);
-            UpdateCollection(ctx, ctx.WarehouseUses.Where(wu => wu.Id == Id), WarehouseUses);
-
-            foreach (var entry in History)
-                entry.OnSave(ctx);
-            foreach (var use in WarehouseUses)
-                use.OnSave(ctx);
+            UpdateCollection(ctx, ctx.ServiceHistory.Where(sh => sh.OrderId == Id), History);
+            UpdateCollection(ctx, ctx.WarehouseUses.Where(wu => wu.RepairOrderId == Id), WarehouseUses);
         }
     }
 }

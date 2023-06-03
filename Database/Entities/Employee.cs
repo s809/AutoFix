@@ -52,7 +52,7 @@ namespace AutoFix
 
         public override void OnSave(AppDbContext ctx)
         {
-            UpdateCollection(ctx, ctx.EmployeePayouts.Where(ep => ep.EmployeeId == Id).AsEnumerable(), Payouts);
+            UpdateCollection(ctx, ctx.EmployeePayouts.Where(ep => ep.EmployeeId == Id), Payouts);
         }
 
         protected override void OnClone(object cloned)

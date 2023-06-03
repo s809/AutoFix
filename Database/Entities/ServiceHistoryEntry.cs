@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -29,8 +30,8 @@ namespace AutoFix
 
         public override void OnSave(AppDbContext ctx)
         {
-            OrderId = Order!.Id;
             ServiceId = Service!.Id;
+            ctx.Entry(Service).State = EntityState.Unchanged;
         }
     }
 }

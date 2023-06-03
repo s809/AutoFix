@@ -23,11 +23,8 @@ namespace AutoFix
             }
 
             using var ctx = new AppDbContext();
-            ctx.Entry(entity).State = entity.Id == 0
-                ? EntityState.Added
-                : EntityState.Modified;
-
             entity.OnSave(ctx);
+            entity.Upsert(ctx);
 
             try
             {
