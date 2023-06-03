@@ -7,5 +7,7 @@
 
         public int ProviderId { get; set; }
         public WarehouseProvider? Provider { get; set; }
+
+        public int Amount { get; set; }
     }
 }

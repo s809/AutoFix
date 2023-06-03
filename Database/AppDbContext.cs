@@ -17,14 +17,17 @@ namespace AutoFix
         public DbSet<WarehouseRestock> WarehouseRestocks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            //=> optionsBuilder.UseNpgsql("Host=localhost;Database=AutoFix;Username=postgres;Password=root;Include Error Detail=true").EnableSensitiveDataLogging();
-            => optionsBuilder.UseNpgsql("Host=localhost;Database=AutoFix;Username=postgres;Password=22345621;Include Error Detail=true").EnableSensitiveDataLogging();
+            => optionsBuilder
+            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+            .EnableSensitiveDataLogging()
+            .UseNpgsql("Host=localhost;Database=AutoFix;Username=postgres;Password=root;Include Error Detail=true");
+            //.UseNpgsql("Host=localhost;Database=AutoFix;Username=postgres;Password=22345621;Include Error Detail=true");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Employee>().HasMany(e => e.RepairOrders).WithOne(o => o.Master);
             modelBuilder.Entity<Employee>().HasMany(e => e.Payouts).WithOne(p => p.Employee);
-            modelBuilder.Entity<Service>().HasMany(s => s.HistoryEntries).WithOne(e => e.Service);
+            modelBuilder.Entity<Service>().HasMany<ServiceHistoryEntry>().WithOne(e => e.Service);
             modelBuilder.Entity<RepairOrder>().HasMany(o => o.History).WithOne(e => e.Order);
             modelBuilder.Entity<RepairOrder>().HasMany(e => e.WarehouseUses).WithOne(u => u.RepairOrder);
             modelBuilder.Entity<WarehouseItem>().HasMany<WarehouseUse>().WithOne(u => u.Item);
@@ -73,6 +76,12 @@ namespace AutoFix
                 .Include(ro => ro.History)
                 .Include(ro => ro.WarehouseUses)
             );
+        }
+
+        public static ObservableCollection<Service> GetAllServices()
+        {
+            using var ctx = new AppDbContext();
+            return new ObservableCollection<Service>(ctx.Services);
         }
     }
 }

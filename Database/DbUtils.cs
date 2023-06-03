@@ -13,16 +13,12 @@ namespace AutoFix
         public static bool Save(this Entity entity)
         {
             var results = new List<ValidationResult>();
-            if (!Validator.TryValidateObject(entity, new ValidationContext(entity), results, true))
-            {
-                MessageBox.Show(string.Join("\n", results), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            }
+            Validator.TryValidateObject(entity, new ValidationContext(entity), results, true);
 
-            var entityValidationResult = entity.Validate();
-            if (entityValidationResult != null)
+            var stringResults = results.Select(x => x.ToString()).Concat(entity.Validate()).ToList();
+            if (stringResults.Count != 0)
             {
-                MessageBox.Show(entityValidationResult, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Join("\n", stringResults), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 

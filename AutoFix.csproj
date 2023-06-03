@@ -21,6 +21,9 @@
     <Compile Update="EntityWindows\RepairOrderWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="EntityWindows\ServiceWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="EntityWindows\WarehouseProviderWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -7,6 +7,6 @@ namespace AutoFix
     /// </summary>
     public partial class WarehouseProviderWindow : EntityWindow<WarehouseProvider>
     {
-        public WarehouseProviderWindow(WarehouseProvider? warehouseItem = null) : base(warehouseItem) => InitializeComponent();
+        public WarehouseProviderWindow(WarehouseProvider? warehouseProvider = null) : base(warehouseProvider) => InitializeComponent();
     }
 }

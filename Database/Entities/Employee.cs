@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,8 +10,14 @@ namespace AutoFix
     {
         private ObservableCollection<EmployeePayout> payouts = new();
 
-        [Required(ErrorMessage = "Не указано ФИО сотрудника.")]
+        [Required(ErrorMessage = "Не указана фамилия сотрудника.")]
+        public string Surname { get; set; } = "";
+        [Required(ErrorMessage = "Не указано имя сотрудника.")]
         public string Name { get; set; } = "";
+        [Required(ErrorMessage = "Не указано отчество сотрудника.")]
+        public string Patronymic { get; set; } = "";
+
+        public string FullName => $"{Surname} {Name} {Patronymic}";
 
         [Required(ErrorMessage = "Не указаны паспортные данные.")]
         public string PassportInfo { get; set; } = "";
@@ -35,14 +42,12 @@ namespace AutoFix
 
         public ObservableCollection<RepairOrder> RepairOrders { get; set; } = new();
         public ObservableCollection<EmployeePayout> Payouts { get => payouts; set => payouts = value; }
-        public override string? Validate()
+        public override IEnumerable<string> Validate()
         {
             if ((EndDate == null) != (EndReason == ""))
-                return "Дата и причина увольнения не могут присутствовать раздельно.";
+                yield return "Дата и причина увольнения не могут присутствовать раздельно.";
             if (EndDate != null && EndDate < StartDate)
-                return "Дата увольнения не может раньше даты наема.";
-
-            return null;
+                yield return "Дата увольнения не может раньше даты наема.";
         }
 
         public override void OnSave(AppDbContext ctx)
@@ -55,6 +60,6 @@ namespace AutoFix
             CloneCollection(payouts, out ((Employee)cloned).payouts);
         }
 
-        public override string ToString() => Name;
+        public override string ToString() => FullName;
     }
 }

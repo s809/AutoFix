@@ -10,7 +10,7 @@ namespace AutoFix
     {
         public int Id { get; set; }
 
-        public virtual string? Validate() => null;
+        public virtual IEnumerable<string> Validate() => Enumerable.Empty<string>();
         public virtual void OnSave(AppDbContext ctx) { }
 
         public object Clone()
@@ -38,6 +38,11 @@ namespace AutoFix
         {
             public bool Equals(Entity? x, Entity? y) => x?.Id == y?.Id;
             public int GetHashCode(Entity obj) => obj.Id.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return $"{GetType().Name} <{Id}>";
         }
     }
 }

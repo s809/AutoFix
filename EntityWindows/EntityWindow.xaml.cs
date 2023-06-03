@@ -12,6 +12,8 @@ namespace AutoFix
     {
         protected readonly T _entity;
 
+        public EntityWindow() : this(null) { }
+
         public EntityWindow(T? entity)
         {
             _entity = entity ?? new();
@@ -22,19 +24,6 @@ namespace AutoFix
         {
             if (_entity.Save())
                 DialogResult = true;
-        }
-
-        protected void NumberBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = new Regex("[^0-9.]+").IsMatch(e.Text);
-        }
-
-        protected void NumberBox_Pasting(object sender, DataObjectPastingEventArgs e)
-        {
-            var text = (string)e.DataObject.GetData(typeof(string));
-            text = new Regex("[^0-9.]+").Replace(text, "");
-            e.CancelCommand();
-            ((TextBox)sender).Text = text;
         }
     }
 }

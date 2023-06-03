@@ -22,32 +22,64 @@
         </Style>
     </Window.Resources>
     <TabControl Margin="3">
-        <TabItem Header="Записи на ремонт">
-            <DockPanel>
-                <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddRepairOrder_Click">Добавить запись</Button>
+        <TabItem Header="Ремонт">
+            <TabControl Margin="3">
+                <TabItem Header="Записи">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddRepairOrder_Click">Добавить запись</Button>
 
-                <ListView x:Name="lwRepairOrders" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
-                    <ListView.Resources>
-                        <Style TargetType="{x:Type ListViewItem}">
-                            <EventSetter Event="MouseDoubleClick" Handler="lwRepairOrders_MouseDoubleClick" />
-                        </Style>
-                    </ListView.Resources>
-                    <ListView.ItemTemplate>
-                        <DataTemplate DataType="local:RepairOrder">
-                            <DockPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <fa:ImageAwesome Icon="Gear" Width="45" Margin="3" />
-                                    <TextBlock Margin="3">
-                                    <Run FontSize="20" Text="{Binding Path=ClientName, FallbackValue=ClientName}" />
-                                    <LineBreak />
-                                    Мастер: <Run Text="{Binding Path=Master.Name, FallbackValue=Master.Name}" />
-                                    </TextBlock>
-                                </StackPanel>
-                            </DockPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </DockPanel>
+                        <ListView x:Name="lwRepairOrders" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
+                            <ListView.Resources>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <EventSetter Event="MouseDoubleClick" Handler="lwRepairOrders_MouseDoubleClick" />
+                                </Style>
+                            </ListView.Resources>
+                            <ListView.ItemTemplate>
+                                <DataTemplate DataType="local:RepairOrder">
+                                    <DockPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <fa:ImageAwesome Icon="Car" Width="45" Margin="3" />
+                                            <TextBlock Margin="3">
+                                                <Run FontSize="20" Text="{Binding Path=ClientName, FallbackValue=ClientName}" />
+                                                <LineBreak />
+                                                Мастер: <Run Text="{Binding Path=Master.Name, FallbackValue=Master.Name}" />
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </DockPanel>
+                </TabItem>
+
+                <TabItem Header="Услуги">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddService_Click">Добавить услугу</Button>
+
+                        <ListView x:Name="lwServices" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
+                            <ListView.Resources>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <EventSetter Event="MouseDoubleClick" Handler="lwServices_MouseDoubleClick" />
+                                </Style>
+                            </ListView.Resources>
+                            <ListView.ItemTemplate>
+                                <DataTemplate DataType="local:Service">
+                                    <DockPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <fa:ImageAwesome Icon="Gear" Width="45" Margin="3" />
+                                            <TextBlock Margin="3">
+                                                <Run FontSize="20" Text="{Binding Path=Name, FallbackValue=Name}" />
+                                                <LineBreak />
+                                                <Run Text="{Binding Path=Price, FallbackValue=Price}" /> руб.
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </DockPanel>
+                </TabItem>
+            </TabControl>
         </TabItem>
 
         <TabItem Header="Склад">
@@ -70,9 +102,9 @@
                                         <StackPanel Orientation="Horizontal">
                                             <fa:ImageAwesome Icon="Gears" Width="45" Margin="3" />
                                             <TextBlock Margin="3">
-                                            <Run FontSize="20" Text="{Binding Path=Name, FallbackValue=Name}" />
-                                            <LineBreak />
-                                            <Run Text="{Binding Path=Manufacturer, FallbackValue=Manufacturer}" />
+                                                <Run FontSize="20" Text="{Binding Path=Name, FallbackValue=Name}" />
+                                                <LineBreak />
+                                                <Run Text="{Binding Path=Manufacturer, FallbackValue=Manufacturer}" />
                                             </TextBlock>
                                         </StackPanel>
                                     </DockPanel>
@@ -97,9 +129,9 @@
                                     <StackPanel Orientation="Horizontal">
                                         <fa:ImageAwesome Icon="Truck" Width="45" Margin="3" />
                                         <TextBlock Margin="3">
-                                        <Run FontSize="20" Text="{Binding Path=Name, FallbackValue=Name}" />
-                                        <LineBreak />
-                                        <Run Text="{Binding Path=ContactInfo, FallbackValue=ContactInfo}" />
+                                            <Run FontSize="20" Text="{Binding Path=Name, FallbackValue=Name}" />
+                                            <LineBreak />
+                                            <Run Text="{Binding Path=ContactInfo, FallbackValue=ContactInfo}" />
                                         </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
@@ -128,7 +160,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <fa:ImageAwesome Icon="User" Width="45" Height="45" Margin="3" />
                                 <TextBlock Grid.Column="1" Margin="3">
-                                    <Run FontSize="20" Text="{Binding Path=Name, FallbackValue=Name}" />
+                                    <Run FontSize="20" Text="{Binding Path=FullName, Mode=OneTime, FallbackValue=FullName}" />
                                     <LineBreak />
                                     <Run Text="{Binding Path=Position, FallbackValue=Position}" />
                                 </TextBlock>

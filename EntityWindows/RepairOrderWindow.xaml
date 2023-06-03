@@ -6,11 +6,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoFix"
         mc:Ignorable="d"
-        Title="Запись на ремонт" Width="700" Height="500"
+        Title="Запись на ремонт" Width="800" SizeToContent="Height"
         ResizeMode="CanResize"
+        x:Name="_this"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <local:DateOnlyConverter x:Key="dateConverter" />
+        <CollectionViewSource x:Key="ItemsCVS" Source="{Binding _services}" />
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -28,9 +30,25 @@
             <TextBlock>Мастер</TextBlock>
             <ComboBox x:Name="masterBox" SelectedItem="{Binding Master}" Margin="0 0 0 5" />
 
-            <TextBlock>Имя клиента</TextBlock>
-            <TextBox Margin="0 0 0 5" Text="{Binding ClientName}" />
+            <GroupBox Header="Клиент">
+                <StackPanel Margin="3">
+                    <TextBlock>Имя</TextBlock>
+                    <TextBox Margin="0 0 0 5" Text="{Binding ClientName}" />
+                    <TextBlock>Телефон</TextBlock>
+                    <TextBox Margin="0 0 0 5" Text="{Binding ClientPhoneNumber}" />
+                </StackPanel>
+            </GroupBox>
 
+            <GroupBox Header="Автомобиль">
+                <StackPanel Margin="3">
+                    <TextBlock>Производитель</TextBlock>
+                    <TextBox Margin="0 0 0 5" Text="{Binding VehicleManufacturer}" />
+                    <TextBlock>Модель</TextBlock>
+                    <TextBox Margin="0 0 0 5" Text="{Binding VehicleModel}" />
+                    <TextBlock>Год выпуска</TextBlock>
+                    <local:NumberBox Margin="0 0 0 5" Text="{Binding VehicleYear}" />
+                </StackPanel>
+            </GroupBox>
             <TextBlock>Дата начала</TextBlock>
             <DatePicker Margin="0 0 0 5" SelectedDate="{Binding StartDate, Converter={StaticResource dateConverter}}" />
 
@@ -48,10 +66,10 @@
 
             <DataGrid ItemsSource="{Binding History}" AutoGenerateColumns="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="2*" Header="Наименование" Binding="{Binding Service}" />
-                    <DataGridTextColumn Width="1*" Header="Дата начала" Binding="{Binding StartDate}" />
-                    <DataGridTextColumn Width="1*" Header="Дата завершения" Binding="{Binding FinishDate}" />
-                    <DataGridTextColumn Width="1*" Header="Отменена" Binding="{Binding IsCancelled}" />
+                    <DataGridComboBoxColumn Width="2*" x:Name="serviceBox" Header="Наименование" SelectedItemBinding="{Binding Service}" />
+                    <DataGridTextColumn Width="1*" Header="Дата начала" Binding="{Binding StartDate, ConverterCulture=RU}" />
+                    <DataGridTextColumn Width="1*" Header="Дата завершения" Binding="{Binding FinishDate, ConverterCulture=RU}" />
+                    <DataGridCheckBoxColumn Width="1*" Header="Отменена" Binding="{Binding IsCancelled}" />
                     <DataGridTextColumn Width="3*" Header="Комментарии" Binding="{Binding Comments}" />
                 </DataGrid.Columns>
             </DataGrid>

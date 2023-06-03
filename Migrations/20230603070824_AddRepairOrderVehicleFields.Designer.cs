@@ -3,6 +3,7 @@ using System;
 using AutoFix;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AutoFix.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230603070824_AddRepairOrderVehicleFields")]
+    partial class AddRepairOrderVehicleFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,20 +55,12 @@ namespace AutoFix.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Patronymic")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Position")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date");
-
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -338,7 +333,7 @@ namespace AutoFix.Migrations
                         .IsRequired();
 
                     b.HasOne("AutoFix.Service", "Service")
-                        .WithMany()
+                        .WithMany("HistoryEntries")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -398,6 +393,11 @@ namespace AutoFix.Migrations
                     b.Navigation("History");
 
                     b.Navigation("WarehouseUses");
+                });
+
+            modelBuilder.Entity("AutoFix.Service", b =>
+                {
+                    b.Navigation("HistoryEntries");
                 });
 
             modelBuilder.Entity("AutoFix.WarehouseProvider", b =>

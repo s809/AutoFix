@@ -44,6 +44,7 @@ namespace AutoFix
             lwWarehouseItems.ItemsSource = AppDbContext.GetAllWarehouseItems();
             lwWarehouseProviders.ItemsSource = AppDbContext.GetAllWarehouseProviders();
             lwRepairOrders.ItemsSource = AppDbContext.GetAllRepairOrders();
+            lwServices.ItemsSource = AppDbContext.GetAllServices();
         }
 
         private void ShowAddOrEditDialog(Window window)
@@ -56,10 +57,12 @@ namespace AutoFix
         private void AddWarehouseItem_Click(object sender, RoutedEventArgs e) => ShowAddOrEditDialog(new WarehouseItemWindow());
         private void AddWarehouseProvider_Click(object sender, RoutedEventArgs e) => ShowAddOrEditDialog(new WarehouseProviderWindow());
         private void AddEmployee_Click(object sender, RoutedEventArgs e) => ShowAddOrEditDialog(new EmployeeWindow());
+        private void AddService_Click(object sender, RoutedEventArgs e) => ShowAddOrEditDialog(new ServiceWindow());
 
         private void lwRepairOrders_MouseDoubleClick(object sender, MouseButtonEventArgs e) => ShowAddOrEditDialog(new RepairOrderWindow(Entity.Clone<RepairOrder>(lwRepairOrders.SelectedItem)));
         private void lwWarehouse_MouseDoubleClick(object sender, MouseButtonEventArgs e) => ShowAddOrEditDialog(new WarehouseItemWindow(Entity.Clone<WarehouseItem>(lwWarehouseItems.SelectedItem)));
         private void lwProviders_MouseDoubleClick(object sender, MouseButtonEventArgs e) => ShowAddOrEditDialog(new WarehouseProviderWindow(Entity.Clone<WarehouseProvider>(lwWarehouseProviders.SelectedItem)));
         private void lwEmployees_MouseDoubleClick(object sender, MouseButtonEventArgs e) => ShowAddOrEditDialog(new EmployeeWindow(Entity.Clone<Employee>(lwEmployees.SelectedItem)));
+        private void lwServices_MouseDoubleClick(object sender, MouseButtonEventArgs e) => ShowAddOrEditDialog(new ServiceWindow(Entity.Clone<Service>(lwServices.SelectedItem)));
     }
 }

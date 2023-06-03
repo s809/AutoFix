@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace AutoFix
@@ -18,12 +19,18 @@ namespace AutoFix
         public bool IsCancelled { get; set; }
         public string Comments { get; set; } = "";
 
-        public override string? Validate()
+        public override IEnumerable<string> Validate()
         {
-            if (FinishDate == null && IsCancelled)
-                return "Для отмены выполнения услуги требуется дата завершения.";
+            if (IsCancelled && FinishDate == null)
+                yield return "Для отмены выполнения услуги требуется дата завершения.";
+            if (FinishDate != null && FinishDate < StartDate)
+                yield return "Дата завершения выполнения услуги не может раньше даты начала.";
+        }
 
-            return null;
+        public override void OnSave(AppDbContext ctx)
+        {
+            OrderId = Order!.Id;
+            ServiceId = Service!.Id;
         }
     }
 }
