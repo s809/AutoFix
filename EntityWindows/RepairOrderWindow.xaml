@@ -1,0 +1,73 @@
+﻿<local:EntityWindow x:TypeArguments="local:RepairOrder"
+        x:Class="AutoFix.RepairOrderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AutoFix"
+        mc:Ignorable="d"
+        Title="Запись на ремонт" Width="700" Height="500"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <local:DateOnlyConverter x:Key="dateConverter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="5" Grid.RowSpan="2">
+            <TextBlock>Мастер</TextBlock>
+            <ComboBox x:Name="masterBox" SelectedItem="{Binding Master}" Margin="0 0 0 5" />
+
+            <TextBlock>Имя клиента</TextBlock>
+            <TextBox Margin="0 0 0 5" Text="{Binding ClientName}" />
+
+            <TextBlock>Дата начала</TextBlock>
+            <DatePicker Margin="0 0 0 5" SelectedDate="{Binding StartDate, Converter={StaticResource dateConverter}}" />
+
+            <TextBlock>Дата завершения</TextBlock>
+            <DatePicker Margin="0 0 0 5" SelectedDate="{Binding FinishDate, Converter={StaticResource dateConverter}}" />
+
+            <CheckBox Margin="0 0 0 5" IsChecked="{Binding IsCancelled}">Отменен</CheckBox>
+
+            <TextBlock>Комментарии</TextBlock>
+            <TextBox Height="50" Text="{Binding Comments}" />
+        </StackPanel>
+
+        <DockPanel Grid.Column="1" Margin="5">
+            <TextBlock DockPanel.Dock="Top">Выполненные услуги</TextBlock>
+
+            <DataGrid ItemsSource="{Binding History}" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="2*" Header="Наименование" Binding="{Binding Service}" />
+                    <DataGridTextColumn Width="1*" Header="Дата начала" Binding="{Binding StartDate}" />
+                    <DataGridTextColumn Width="1*" Header="Дата завершения" Binding="{Binding FinishDate}" />
+                    <DataGridTextColumn Width="1*" Header="Отменена" Binding="{Binding IsCancelled}" />
+                    <DataGridTextColumn Width="3*" Header="Комментарии" Binding="{Binding Comments}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+
+        <DockPanel Grid.Column="1" Grid.Row="1" Margin="5">
+            <TextBlock DockPanel.Dock="Top">Использованные предметы</TextBlock>
+
+            <DataGrid ItemsSource="{Binding WarehouseUses}" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="2*" Header="Предмет" Binding="{Binding Item}" />
+                    <DataGridTextColumn Width="1*" Header="Количество" Binding="{Binding Amount}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+
+        <Button Grid.Row="2" Grid.ColumnSpan="2" Margin="3" Padding="5" HorizontalAlignment="Center" Click="SaveButton_Click">Сохранить</Button>
+    </Grid>
+</local:EntityWindow>

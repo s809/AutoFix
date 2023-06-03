@@ -1,0 +1,24 @@
+﻿<local:EntityWindow x:TypeArguments="local:WarehouseItem"
+        x:Class="AutoFix.WarehouseItemWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AutoFix"
+        mc:Ignorable="d"
+        Title="Предмет склада" Width="150" SizeToContent="Height"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+    <StackPanel Margin="5">
+        <TextBlock>Название</TextBlock>
+        <TextBox Margin="0 0 0 5" Text="{Binding Name}" />
+
+        <TextBlock>Производитель</TextBlock>
+        <TextBox Margin="0 0 0 5" Text="{Binding Manufacturer}" />
+
+        <TextBlock>Стоимость</TextBlock>
+        <TextBox Margin="0 0 0 5" Text="{Binding Price}" PreviewTextInput="NumberBox_PreviewTextInput" DataObject.Pasting="NumberBox_Pasting" />
+
+        <Button Padding="3" HorizontalAlignment="Center" Click="SaveButton_Click">Сохранить</Button>
+    </StackPanel>
+</local:EntityWindow>
