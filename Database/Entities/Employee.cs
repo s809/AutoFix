@@ -42,7 +42,7 @@ namespace AutoFix
 
         public ObservableCollection<RepairOrder> RepairOrders { get; set; } = new();
         public ObservableCollection<EmployeePayout> Payouts { get => payouts; set => payouts = value; }
-        public override IEnumerable<string> Validate()
+        protected override IEnumerable<string> OnValidate()
         {
             if ((EndDate == null) != (EndReason == ""))
                 yield return "Дата и причина увольнения не могут присутствовать раздельно.";

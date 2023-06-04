@@ -10,5 +10,10 @@ namespace AutoFix
         public string Manufacturer { get; set; } = "";
         [Range(0, int.MaxValue, ErrorMessage = "Стоимость не может быть меньше 0.")]
         public decimal Price { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Name} ({Manufacturer})";
+        }
     }
 }

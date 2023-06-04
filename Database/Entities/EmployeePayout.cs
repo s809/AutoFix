@@ -6,12 +6,11 @@ namespace AutoFix
     public class EmployeePayout : Entity
     {
         public int EmployeeId { get; set; }
-        [Required]
         public Employee? Employee { get; set; }
 
         public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);
         public decimal Amount { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Не указана причина выплаты.")]
         public string Reason { get; set; } = "";
     }
 }

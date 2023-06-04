@@ -80,7 +80,7 @@
 
             <DataGrid ItemsSource="{Binding WarehouseUses}" AutoGenerateColumns="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="2*" Header="Предмет" Binding="{Binding Item}" />
+                    <DataGridComboBoxColumn Width="2*" x:Name="warehouseItemBox" Header="Предмет" SelectedItemBinding="{Binding Item}" />
                     <DataGridTextColumn Width="1*" Header="Количество" Binding="{Binding Amount}" />
                 </DataGrid.Columns>
             </DataGrid>

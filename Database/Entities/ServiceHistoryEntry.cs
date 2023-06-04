@@ -8,7 +8,6 @@ namespace AutoFix
     public class ServiceHistoryEntry : Entity
     {
         public int OrderId { get; set; }
-        [Required]
         public RepairOrder? Order { get; set; }
         
         public int ServiceId { get; set; }
@@ -20,7 +19,7 @@ namespace AutoFix
         public bool IsCancelled { get; set; }
         public string Comments { get; set; } = "";
 
-        public override IEnumerable<string> Validate()
+        protected override IEnumerable<string> OnValidate()
         {
             if (IsCancelled && FinishDate == null)
                 yield return "Для отмены выполнения услуги требуется дата завершения.";

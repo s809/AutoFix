@@ -18,6 +18,11 @@ namespace AutoFix
             foreach (var entry in _entity.History)
                 entry.Service = services.First(s => s.Id == entry.ServiceId);
             serviceBox.ItemsSource = services;
+
+            var warehouseItems = AppDbContext.GetAllWarehouseItems();
+            foreach (var use in _entity.WarehouseUses)
+                use.Item = warehouseItems.First(i => i.Id == use.ItemId);
+            warehouseItemBox.ItemsSource = warehouseItems;
         }
     }
 }

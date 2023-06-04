@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Windows;
 
 namespace AutoFix
 {
@@ -10,7 +12,40 @@ namespace AutoFix
     {
         public int Id { get; set; }
 
-        public virtual IEnumerable<string> Validate() => Enumerable.Empty<string>();
+        public IEnumerable<string> Validate()
+        {
+            var results = new List<ValidationResult>();
+            Validator.TryValidateObject(this, new ValidationContext(this), results, true);
+
+            return results.Select(x => x.ToString()).Concat(OnValidate()).ToList();
+        }
+        protected virtual IEnumerable<string> OnValidate() => Enumerable.Empty<string>();
+
+        public bool Save()
+        {
+            var validationResults = Validate();
+            if (validationResults.Any())
+            {
+                MessageBox.Show(string.Join("\n", validationResults), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            using var ctx = new AppDbContext();
+            OnSave(ctx);
+            Upsert(ctx);
+
+            try
+            {
+                ctx.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString(), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            return true;
+        }
         public virtual void OnSave(AppDbContext ctx) { }
 
         public object Clone()

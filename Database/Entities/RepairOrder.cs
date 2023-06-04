@@ -12,8 +12,8 @@ namespace AutoFix
         private ObservableCollection<WarehouseUse> warehouseUses = new();
 
         public int MasterId { get; set; }
-        [Required]
         public Employee? Master { get; set; }
+
 
         [Required(ErrorMessage = "Не указано имя клиента.")]
         public string ClientName { get; set; } = "";
@@ -43,7 +43,7 @@ namespace AutoFix
             CloneCollection(warehouseUses, out ((RepairOrder)cloned).warehouseUses);
         }
 
-        public override IEnumerable<string> Validate()
+        protected override IEnumerable<string> OnValidate()
         {
             if (IsCancelled && FinishDate == null)
                 yield return "Для отмены записи на ремонт требуется дата завершения.";
