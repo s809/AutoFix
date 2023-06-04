@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoFix"
         mc:Ignorable="d"
-        Title="Запись на ремонт" Width="800" SizeToContent="Height"
+        Title="Запись на ремонт" Width="1000" SizeToContent="Height"
         ResizeMode="CanResize"
         x:Name="_this"
         WindowStartupLocation="CenterScreen">
@@ -16,8 +16,8 @@
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
             <ColumnDefinition />
-            <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
@@ -67,9 +67,31 @@
             <DataGrid ItemsSource="{Binding History}" AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridComboBoxColumn Width="2*" x:Name="serviceBox" Header="Наименование" SelectedItemBinding="{Binding Service}" />
-                    <DataGridTextColumn Width="1*" Header="Дата начала" Binding="{Binding StartDate, ConverterCulture=RU}" />
-                    <DataGridTextColumn Width="1*" Header="Дата завершения" Binding="{Binding FinishDate, ConverterCulture=RU}" />
-                    <DataGridCheckBoxColumn Width="1*" Header="Отменена" Binding="{Binding IsCancelled}" />
+                    <DataGridTemplateColumn Width="1*" Header="Дата начала">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding StartDate, ConverterCulture=RU}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <DatePicker SelectedDate="{Binding StartDate, Converter={StaticResource dateConverter}}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="1*" Header="Дата завершения">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding FinishDate, ConverterCulture=RU}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <DatePicker SelectedDate="{Binding FinishDate, Converter={StaticResource dateConverter}}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridCheckBoxColumn Width="50" Header="Отменена" Binding="{Binding IsCancelled}" />
                     <DataGridTextColumn Width="3*" Header="Комментарии" Binding="{Binding Comments}" />
                 </DataGrid.Columns>
             </DataGrid>

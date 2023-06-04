@@ -48,6 +48,9 @@ namespace AutoFix
                 yield return "Дата и причина увольнения не могут присутствовать раздельно.";
             if (EndDate != null && EndDate < StartDate)
                 yield return "Дата увольнения не может раньше даты наема.";
+
+            foreach (var error in Payouts.SelectMany(payout => payout.Validate()))
+                yield return error;
         }
 
         public override void OnSave(AppDbContext ctx)

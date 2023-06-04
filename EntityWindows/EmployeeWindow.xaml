@@ -84,7 +84,18 @@
 
             <DataGrid ItemsSource="{Binding Payouts}" AutoGenerateColumns="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="4*" Header="Дата" Binding="{Binding Date, ConverterCulture=RU}" />
+                    <DataGridTemplateColumn Width="4*" Header="Дата">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Date, ConverterCulture=RU}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <DatePicker SelectedDate="{Binding Date, Converter={StaticResource dateConverter}}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Width="3*" Header="Сумма, руб." Binding="{Binding Amount}" />
                     <DataGridTextColumn Width="6*" Header="Причина" Binding="{Binding Reason}" />
                 </DataGrid.Columns>
