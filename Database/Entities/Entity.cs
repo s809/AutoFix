@@ -17,7 +17,7 @@ namespace AutoFix
             var results = new List<ValidationResult>();
             Validator.TryValidateObject(this, new ValidationContext(this), results, true);
 
-            return results.Select(x => x.ToString()).Concat(OnValidate()).ToList();
+            return results.Select(x => x.ToString()).Concat(OnValidate());
         }
         protected virtual IEnumerable<string> OnValidate() => Enumerable.Empty<string>();
 

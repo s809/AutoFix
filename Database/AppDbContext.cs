@@ -25,14 +25,14 @@ namespace AutoFix
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Employee>().HasMany(e => e.RepairOrders).WithOne(o => o.Master);
+            modelBuilder.Entity<Employee>().HasMany<RepairOrder>().WithOne(o => o.Master);
             modelBuilder.Entity<Employee>().HasMany(e => e.Payouts).WithOne(p => p.Employee);
             modelBuilder.Entity<Service>().HasMany<ServiceHistoryEntry>().WithOne(e => e.Service);
             modelBuilder.Entity<RepairOrder>().HasMany(o => o.History).WithOne(e => e.Order);
             modelBuilder.Entity<RepairOrder>().HasMany(e => e.WarehouseUses).WithOne(u => u.RepairOrder);
             modelBuilder.Entity<WarehouseItem>().HasMany<WarehouseUse>().WithOne(u => u.Item);
-            modelBuilder.Entity<WarehouseItem>().HasMany<WarehouseRestock>().WithOne(r => r.Item);
-            modelBuilder.Entity<WarehouseProvider>().HasMany(p => p.Restocks).WithOne(r => r.Provider);
+            modelBuilder.Entity<WarehouseItem>().HasMany(i => i.Restocks).WithOne(r => r.Item);
+            modelBuilder.Entity<WarehouseProvider>().HasMany<WarehouseRestock>().WithOne(r => r.Provider);
         }
 
         public static Employee? FindLoginEmployee(string username, string password)
@@ -59,7 +59,10 @@ namespace AutoFix
         public static ObservableCollection<WarehouseItem> GetAllWarehouseItems()
         {
             using var ctx = new AppDbContext();
-            return new ObservableCollection<WarehouseItem>(ctx.WarehouseItems);
+            return new ObservableCollection<WarehouseItem>(
+                ctx.WarehouseItems
+                .Include(i => i.Restocks)
+            );
         }
 
         public static ObservableCollection<WarehouseProvider> GetAllWarehouseProviders()

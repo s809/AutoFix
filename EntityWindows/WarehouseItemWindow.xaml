@@ -6,19 +6,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoFix"
         mc:Ignorable="d"
-        Title="Предмет склада" Width="150" SizeToContent="Height"
+        Title="Предмет склада" Width="450" Height="300"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
-    <StackPanel Margin="5">
-        <TextBlock>Название</TextBlock>
-        <TextBox Margin="0 0 0 5" Text="{Binding Name}" />
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
 
-        <TextBlock>Производитель</TextBlock>
-        <TextBox Margin="0 0 0 5" Text="{Binding Manufacturer}" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Margin="5">
+            <TextBlock>Название</TextBlock>
+            <TextBox Margin="0 0 0 5" Text="{Binding Name}" />
 
-        <TextBlock>Стоимость</TextBlock>
-        <local:NumberBox Margin="0 0 0 5" Text="{Binding Price}" />
+            <TextBlock>Производитель</TextBlock>
+            <TextBox Margin="0 0 0 5" Text="{Binding Manufacturer}" />
 
-        <Button Padding="3" HorizontalAlignment="Center" Click="SaveButton_Click">Сохранить</Button>
-    </StackPanel>
+            <TextBlock>Стоимость</TextBlock>
+            <local:NumberBox Margin="0 0 0 5" Text="{Binding Price}" />
+        </StackPanel>
+
+        <DockPanel Grid.Column="1" Margin="5">
+            <TextBlock DockPanel.Dock="Top">Пополнения</TextBlock>
+            <DataGrid ItemsSource="{Binding Restocks}" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridComboBoxColumn Width="2*" x:Name="providerBox" Header="Поставщик" SelectedItemBinding="{Binding Provider}" />
+                    <DataGridTextColumn Width="1*" Header="Количество" Binding="{Binding Amount}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+
+        <Button Grid.Row="1" Grid.ColumnSpan="2" Padding="3" HorizontalAlignment="Center" Click="SaveButton_Click">Сохранить</Button>
+    </Grid>
 </local:EntityWindow>

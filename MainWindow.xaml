@@ -96,18 +96,14 @@
                             </ListView.Resources>
                             <ListView.ItemTemplate>
                                 <DataTemplate DataType="local:WarehouseItem">
-                                    <DockPanel>
-                                        <Button DockPanel.Dock="Right">Заказать</Button>
-
-                                        <StackPanel Orientation="Horizontal">
-                                            <fa:ImageAwesome Icon="Gears" Width="45" Margin="3" />
-                                            <TextBlock Margin="3">
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Icon="Gears" Width="45" Margin="3" />
+                                        <TextBlock Margin="3">
                                                 <Run FontSize="20" Text="{Binding Path=Name, FallbackValue=Name}" />
                                                 <LineBreak />
                                                 <Run Text="{Binding Path=Manufacturer, FallbackValue=Manufacturer}" />
-                                            </TextBlock>
-                                        </StackPanel>
-                                    </DockPanel>
+                                        </TextBlock>
+                                    </StackPanel>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>

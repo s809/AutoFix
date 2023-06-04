@@ -40,7 +40,6 @@ namespace AutoFix
         [Required(ErrorMessage = "Не указан пароль сотрудника.")]
         public string Password { get; set; } = "";
 
-        public ObservableCollection<RepairOrder> RepairOrders { get; set; } = new();
         public ObservableCollection<EmployeePayout> Payouts { get => payouts; set => payouts = value; }
         protected override IEnumerable<string> OnValidate()
         {
