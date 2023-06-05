@@ -102,6 +102,9 @@
             </DataGrid>
         </DockPanel>
 
-        <Button Grid.Row="3" Grid.ColumnSpan="2" Margin="3" Width="150" Height="30" Click="SaveButton_Click">Сохранить</Button>
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Margin="3" Width="150" Height="30" Click="SaveButton_Click">Сохранить</Button>
+            <Button Margin="3" Width="150" Height="30" Click="DeleteButton_Click">Удалить</Button>
+        </StackPanel>
     </Grid>
 </local:EntityWindow>

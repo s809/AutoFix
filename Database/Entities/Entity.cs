@@ -11,7 +11,9 @@ namespace AutoFix
     public abstract class Entity : ICloneable
     {
         public int Id { get; set; }
+        public bool IsDeleted { get; set; }
 
+        #region Validate
         public IEnumerable<string> Validate()
         {
             var results = new List<ValidationResult>();
@@ -20,7 +22,9 @@ namespace AutoFix
             return results.Select(x => x.ToString()).Concat(OnValidate());
         }
         protected virtual IEnumerable<string> OnValidate() => Enumerable.Empty<string>();
+        #endregion
 
+        #region Save
         public bool Save()
         {
             var validationResults = Validate().ToList();
@@ -47,7 +51,35 @@ namespace AutoFix
             return true;
         }
         public virtual void OnSave(AppDbContext ctx) { }
+        protected static void UpdateCollection<T>(AppDbContext ctx, IEnumerable<T> inDb, IEnumerable<T> updated, bool softDelete = false) where T : Entity
+        {
+            var toDelete = inDb.Except(updated, EqualityComparer);
+            
+            if (softDelete)
+            {
+                foreach (var item in toDelete)
+                    item.IsDeleted = true;
+            }
+            else
+            {
+                ctx.RemoveRange(toDelete);
+            }
+            
+            foreach (var entity in updated)
+            {
+                entity.OnSave(ctx);
+                entity.Upsert(ctx);
+            }
+        }
+        public void Upsert(AppDbContext ctx)
+        {
+            ctx.Entry(this).State = Id == 0
+                ? EntityState.Added
+                : EntityState.Modified;
+        }
+        #endregion
 
+        #region Clone
         public object Clone()
         {
             var cloned = MemberwiseClone();
@@ -59,25 +91,17 @@ namespace AutoFix
         {
             cloned = new ObservableCollection<T>(original.Select(e => (T)e.Clone()));
         }
-
         public static T Clone<T>(object entity) where T : Entity => (T)((T)entity).Clone();
+        #endregion
 
-        protected static void UpdateCollection<T>(AppDbContext ctx, IEnumerable<T> inDb, IEnumerable<T> updated) where T : Entity
+        #region Delete
+        public virtual bool Delete()
         {
-            ctx.RemoveRange(inDb.Except(updated, EqualityComparer));
-            foreach (var entity in updated)
-            {
-                entity.OnSave(ctx);
-                entity.Upsert(ctx);
-            }
+            IsDeleted = true;
+            Save();
+            return true;
         }
-
-        public void Upsert(AppDbContext ctx)
-        {
-            ctx.Entry(this).State = Id == 0
-                ? EntityState.Added
-                : EntityState.Modified;
-        }
+        #endregion
 
         public static EntityEqualityComparer EqualityComparer { get; } = new();
         public class EntityEqualityComparer : IEqualityComparer<Entity>

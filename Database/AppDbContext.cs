@@ -38,13 +38,13 @@ namespace AutoFix
         public static Employee? FindLoginEmployee(string username, string password)
         {
             using var ctx = new AppDbContext();
-            return ctx.Employees.FirstOrDefault(e => e.Username == username && e.Password == password);
+            return ctx.Employees.FirstOrDefault(e => !e.IsDeleted && e.Username == username && e.Password == password);
         }
 
         public static int CountEmployees()
         {
             using var ctx = new AppDbContext();
-            return ctx.Employees.Count();
+            return ctx.Employees.Count(e => !e.IsDeleted);
         }
 
         public static ObservableCollection<Employee> GetAllEmployees()
@@ -52,6 +52,7 @@ namespace AutoFix
             using var ctx = new AppDbContext();
             return new ObservableCollection<Employee>(
                 ctx.Employees
+                .Where(e => !e.IsDeleted)
                 .Include(e => e.Payouts)
             );
         }
@@ -61,7 +62,8 @@ namespace AutoFix
             using var ctx = new AppDbContext();
             return new ObservableCollection<WarehouseItem>(
                 ctx.WarehouseItems
-                .Include(i => i.Restocks)
+                .Where(e => !e.IsDeleted)
+                .Include(i => i.Restocks).ThenInclude(r => r.Provider)
                 .Include(i => i.Uses)
             );
         }
@@ -69,7 +71,10 @@ namespace AutoFix
         public static ObservableCollection<WarehouseProvider> GetAllWarehouseProviders()
         {
             using var ctx = new AppDbContext();
-            return new ObservableCollection<WarehouseProvider>(ctx.WarehouseProviders);
+            return new ObservableCollection<WarehouseProvider>(
+                ctx.WarehouseProviders
+                .Where(e => !e.IsDeleted)
+            );
         }
 
         public static ObservableCollection<RepairOrder> GetAllRepairOrders()
@@ -77,8 +82,9 @@ namespace AutoFix
             using var ctx = new AppDbContext();
             return new ObservableCollection<RepairOrder>(
                 ctx.RepairOrders
-                .Include(ro => ro.History)
-                .Include(ro => ro.WarehouseUses)
+                .Where(e => !e.IsDeleted)
+                .Include(ro => ro.History).ThenInclude(sh => sh.Service)
+                .Include(ro => ro.WarehouseUses).ThenInclude(u => u.Item)
                 .Include(ro => ro.Master)
             );
         }
@@ -86,7 +92,10 @@ namespace AutoFix
         public static ObservableCollection<Service> GetAllServices()
         {
             using var ctx = new AppDbContext();
-            return new ObservableCollection<Service>(ctx.Services);
+            return new ObservableCollection<Service>(
+                ctx.Services
+                .Where(e => !e.IsDeleted)
+            );
         }
     }
 }

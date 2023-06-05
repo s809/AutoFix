@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoFix"
         mc:Ignorable="d"
-        Title="Поставщик склада" Width="200" SizeToContent="Height"
+        Title="Поставщик склада" SizeToContent="WidthAndHeight"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
     <StackPanel Margin="5">
@@ -16,6 +16,9 @@
         <TextBlock>Контактная информация</TextBlock>
         <TextBox Margin="0 0 0 5" Height="50" Text="{Binding ContactInfo}" />
 
-        <Button Padding="3" HorizontalAlignment="Center" Click="SaveButton_Click">Сохранить</Button>
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Margin="3" Width="100" Height="30" Click="SaveButton_Click">Сохранить</Button>
+            <Button Margin="3" Width="100" Height="30" Click="DeleteButton_Click">Удалить</Button>
+        </StackPanel>
     </StackPanel>
 </local:EntityWindow>

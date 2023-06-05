@@ -14,7 +14,13 @@ namespace AutoFix
 
             var providers = AppDbContext.GetAllWarehouseProviders();
             foreach (var entry in _entity.Restocks)
-                entry.Provider = providers.First(s => s.Id == entry.ProviderId);
+            {
+                var fixedProvider = providers.FirstOrDefault(s => s.Id == entry.ProviderId);
+                if (fixedProvider != null)
+                    entry.Provider = fixedProvider;
+                else
+                    providers.Add(entry.Provider!);
+            }
             providerBox.ItemsSource = providers;
         }
     }

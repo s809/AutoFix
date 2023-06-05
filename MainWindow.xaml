@@ -141,10 +141,7 @@
 
         <TabItem Header="Сотрудники">
             <DockPanel>
-                <DockPanel DockPanel.Dock="Bottom">
-                    <Button HorizontalAlignment="Left" Click="AddEmployee_Click">Добавить сотрудника</Button>
-                    <Button HorizontalAlignment="Right">Управление выплатами</Button>
-                </DockPanel>
+                <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddEmployee_Click">Добавить сотрудника</Button>
 
                 <ListView x:Name="lvEmployees" Grid.ColumnSpan="2" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
                     <ListView.Resources>

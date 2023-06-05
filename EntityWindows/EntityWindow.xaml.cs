@@ -25,5 +25,21 @@ namespace AutoFix
             if (_entity.Save())
                 DialogResult = true;
         }
+
+        protected void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_entity.Id == 0)
+            {
+                MessageBox.Show("Невозможно удалить без создания.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var result = MessageBox.Show("Вы уверены?", "Удаление", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.Yes)
+            {
+                if (_entity.Delete())
+                    DialogResult = true;
+            }
+        }
     }
 }

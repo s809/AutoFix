@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Windows;
 
 namespace AutoFix
 {
@@ -17,7 +18,7 @@ namespace AutoFix
         [Required(ErrorMessage = "Не указано отчество сотрудника.")]
         public string Patronymic { get; set; } = "";
 
-        public string FullName => $"{Surname} {Name} {Patronymic}";
+        public string FullName => $"{Surname} {Name} {Patronymic}{(App.LoggedInEmployee?.Id == Id ? " (Вы)" : "")}";
 
         [Required(ErrorMessage = "Не указаны паспортные данные.")]
         public string PassportInfo { get; set; } = "";
@@ -60,6 +61,32 @@ namespace AutoFix
         protected override void OnClone(object cloned)
         {
             CloneCollection(payouts, out ((Employee)cloned).payouts);
+        }
+
+        public override bool Delete()
+        {
+            if (App.LoggedInEmployee?.Id == Id)
+            {
+                MessageBox.Show("Невозможно удалить себя.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            if (AppDbContext.CountEmployees() == 1)
+            {
+                MessageBox.Show("Невозможно удалить последнего сотрудника.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            using var ctx = new AppDbContext();
+            if (ctx.RepairOrders.Any(ro => !ro.IsDeleted && ro.MasterId == Id))
+            {
+                MessageBox.Show("Мастер имеет привязанные к нему заявки на ремонт.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            UpdateCollection(ctx, ctx.EmployeePayouts.Where(ep => ep.EmployeeId == Id), Enumerable.Empty<EmployeePayout>());
+            ctx.SaveChanges();
+
+            return base.Delete();
         }
 
         public override string ToString() => FullName;

@@ -16,12 +16,24 @@ namespace AutoFix
 
             var services = AppDbContext.GetAllServices();
             foreach (var entry in _entity.History)
-                entry.Service = services.First(s => s.Id == entry.ServiceId);
+            {
+                var fixedService = services.FirstOrDefault(s => s.Id == entry.ServiceId);
+                if (fixedService != null)
+                    entry.Service = fixedService;
+                else
+                    services.Add(entry.Service!);
+            }
             serviceBox.ItemsSource = services;
 
             var warehouseItems = AppDbContext.GetAllWarehouseItems();
             foreach (var use in _entity.WarehouseUses)
-                use.Item = warehouseItems.First(i => i.Id == use.ItemId);
+            {
+                var fixedItem = warehouseItems.FirstOrDefault(s => s.Id == use.ItemId);
+                if (fixedItem != null)
+                    use.Item = fixedItem;
+                else
+                    warehouseItems.Add(use.Item!);
+            }
             warehouseItemBox.ItemsSource = warehouseItems;
         }
     }

@@ -12,7 +12,7 @@ namespace AutoFix
         {
             InitializeComponent();
 
-            if (AppDbContext.CountEmployees() != 0)
+            if (AppDbContext.CountEmployees() > 0)
             {
                 if (new LoginWindow().ShowDialog() != true)
                 {
@@ -23,10 +23,7 @@ namespace AutoFix
             else
             {
                 MessageBox.Show("При первом запуске необходимо создать учетную запись сотрудника.", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
-                if (new EmployeeWindow(new Employee()
-                {
-                    Position = "Механик"
-                }).ShowDialog() != true)
+                if (new EmployeeWindow(new Employee()).ShowDialog() != true)
                 {
                     Close();
                     return;

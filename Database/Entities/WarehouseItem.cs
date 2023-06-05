@@ -45,8 +45,18 @@ namespace AutoFix
             UpdateCollection(ctx, ctx.WarehouseRestocks.Where(r => r.ItemId == Id), restocks);
         }
 
+        public override bool Delete()
+        {
+            using var ctx = new AppDbContext();
+            UpdateCollection(ctx, ctx.WarehouseRestocks.Where(r => r.ItemId == Id), Enumerable.Empty<WarehouseRestock>(), true);
+            ctx.SaveChanges();
+            return base.Delete();
+        }
+
         public override string ToString()
         {
+            if (IsDeleted)
+                return $"{Manufacturer} {Name}";
             return $"{Manufacturer} {Name} ({Amount} ед.)";
         }
     }

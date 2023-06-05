@@ -59,7 +59,7 @@ namespace AutoFix
 
             if (!usesErrors.Any())
             {
-                var itemUseAmounts = WarehouseUses.GroupBy(u => u.Item!.Id).Select(g => new
+                var itemUseAmounts = WarehouseUses.Where(u => !u.Item!.IsDeleted).GroupBy(u => u.Item!.Id).Select(g => new
                 {
                     Item = g.First().Item!,
                     Amount = g.Sum(u => u.Amount)
@@ -81,6 +81,15 @@ namespace AutoFix
 
             UpdateCollection(ctx, ctx.ServiceHistory.Where(sh => sh.OrderId == Id), History);
             UpdateCollection(ctx, ctx.WarehouseUses.Where(wu => wu.RepairOrderId == Id), WarehouseUses);
+        }
+
+        public override bool Delete()
+        {
+            using var ctx = new AppDbContext();
+            UpdateCollection(ctx, ctx.ServiceHistory.Where(sh => sh.OrderId == Id), Enumerable.Empty<ServiceHistoryEntry>());
+            UpdateCollection(ctx, ctx.WarehouseUses.Where(wu => wu.RepairOrderId == Id), Enumerable.Empty<WarehouseUse>());
+            ctx.SaveChanges();
+            return base.Delete();
         }
     }
 }
