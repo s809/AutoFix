@@ -25,10 +25,6 @@ namespace AutoFix
         {
             InitializeComponent();
             passwordBox.Password = _entity.Password;
-
-            if (App.LoggedInEmployee == null)
-                positionBox.IsEnabled = false;
-
             Closing += Window_Closing;
         }
 

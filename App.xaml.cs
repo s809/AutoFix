@@ -13,7 +13,6 @@ namespace AutoFix
     /// </summary>
     public partial class App : Application
     {
-        public static readonly string AdminPosition = "Директор";
         public static Employee? LoggedInEmployee { get; set; }
     }
 }

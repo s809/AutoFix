@@ -22,10 +22,10 @@ namespace AutoFix
             }
             else
             {
-                MessageBox.Show("При первом запуске необходимо создать учетную запись директора.", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("При первом запуске необходимо создать учетную запись сотрудника.", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
                 if (new EmployeeWindow(new Employee()
                 {
-                    Position = App.AdminPosition
+                    Position = "Механик"
                 }).ShowDialog() != true)
                 {
                     Close();
@@ -40,11 +40,11 @@ namespace AutoFix
         {
             Title = $"{Resources["title"]} ({App.LoggedInEmployee!.Name})";
 
-            lwEmployees.ItemsSource = AppDbContext.GetAllEmployees();
-            lwWarehouseItems.ItemsSource = AppDbContext.GetAllWarehouseItems();
-            lwWarehouseProviders.ItemsSource = AppDbContext.GetAllWarehouseProviders();
-            lwRepairOrders.ItemsSource = AppDbContext.GetAllRepairOrders();
-            lwServices.ItemsSource = AppDbContext.GetAllServices();
+            lvEmployees.ItemsSource = AppDbContext.GetAllEmployees();
+            lvWarehouseItems.ItemsSource = AppDbContext.GetAllWarehouseItems();
+            lvWarehouseProviders.ItemsSource = AppDbContext.GetAllWarehouseProviders();
+            lvRepairOrders.ItemsSource = AppDbContext.GetAllRepairOrders();
+            lvServices.ItemsSource = AppDbContext.GetAllServices();
         }
 
         private void ShowAddOrEditDialog(Window window)
@@ -59,10 +59,10 @@ namespace AutoFix
         private void AddEmployee_Click(object sender, RoutedEventArgs e) => ShowAddOrEditDialog(new EmployeeWindow());
         private void AddService_Click(object sender, RoutedEventArgs e) => ShowAddOrEditDialog(new ServiceWindow());
 
-        private void lwRepairOrders_MouseDoubleClick(object sender, MouseButtonEventArgs e) => ShowAddOrEditDialog(new RepairOrderWindow(Entity.Clone<RepairOrder>(lwRepairOrders.SelectedItem)));
-        private void lwWarehouse_MouseDoubleClick(object sender, MouseButtonEventArgs e) => ShowAddOrEditDialog(new WarehouseItemWindow(Entity.Clone<WarehouseItem>(lwWarehouseItems.SelectedItem)));
-        private void lwProviders_MouseDoubleClick(object sender, MouseButtonEventArgs e) => ShowAddOrEditDialog(new WarehouseProviderWindow(Entity.Clone<WarehouseProvider>(lwWarehouseProviders.SelectedItem)));
-        private void lwEmployees_MouseDoubleClick(object sender, MouseButtonEventArgs e) => ShowAddOrEditDialog(new EmployeeWindow(Entity.Clone<Employee>(lwEmployees.SelectedItem)));
-        private void lwServices_MouseDoubleClick(object sender, MouseButtonEventArgs e) => ShowAddOrEditDialog(new ServiceWindow(Entity.Clone<Service>(lwServices.SelectedItem)));
+        private void lvRepairOrders_MouseDoubleClick(object sender, MouseButtonEventArgs e) => ShowAddOrEditDialog(new RepairOrderWindow(Entity.Clone<RepairOrder>(lvRepairOrders.SelectedItem)));
+        private void lvWarehouse_MouseDoubleClick(object sender, MouseButtonEventArgs e) => ShowAddOrEditDialog(new WarehouseItemWindow(Entity.Clone<WarehouseItem>(lvWarehouseItems.SelectedItem)));
+        private void lvProviders_MouseDoubleClick(object sender, MouseButtonEventArgs e) => ShowAddOrEditDialog(new WarehouseProviderWindow(Entity.Clone<WarehouseProvider>(lvWarehouseProviders.SelectedItem)));
+        private void lvEmployees_MouseDoubleClick(object sender, MouseButtonEventArgs e) => ShowAddOrEditDialog(new EmployeeWindow(Entity.Clone<Employee>(lvEmployees.SelectedItem)));
+        private void lvServices_MouseDoubleClick(object sender, MouseButtonEventArgs e) => ShowAddOrEditDialog(new ServiceWindow(Entity.Clone<Service>(lvServices.SelectedItem)));
     }
 }

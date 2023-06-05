@@ -30,7 +30,7 @@ namespace AutoFix
             modelBuilder.Entity<Service>().HasMany<ServiceHistoryEntry>().WithOne(e => e.Service);
             modelBuilder.Entity<RepairOrder>().HasMany(o => o.History).WithOne(e => e.Order);
             modelBuilder.Entity<RepairOrder>().HasMany(e => e.WarehouseUses).WithOne(u => u.RepairOrder);
-            modelBuilder.Entity<WarehouseItem>().HasMany<WarehouseUse>().WithOne(u => u.Item);
+            modelBuilder.Entity<WarehouseItem>().HasMany(i => i.Uses).WithOne(u => u.Item);
             modelBuilder.Entity<WarehouseItem>().HasMany(i => i.Restocks).WithOne(r => r.Item);
             modelBuilder.Entity<WarehouseProvider>().HasMany<WarehouseRestock>().WithOne(r => r.Provider);
         }
@@ -62,6 +62,7 @@ namespace AutoFix
             return new ObservableCollection<WarehouseItem>(
                 ctx.WarehouseItems
                 .Include(i => i.Restocks)
+                .Include(i => i.Uses)
             );
         }
 
@@ -78,6 +79,7 @@ namespace AutoFix
                 ctx.RepairOrders
                 .Include(ro => ro.History)
                 .Include(ro => ro.WarehouseUses)
+                .Include(ro => ro.Master)
             );
         }
 

@@ -28,10 +28,10 @@
                     <DockPanel>
                         <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddRepairOrder_Click">Добавить запись</Button>
 
-                        <ListView x:Name="lwRepairOrders" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
+                        <ListView x:Name="lvRepairOrders" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
                             <ListView.Resources>
                                 <Style TargetType="{x:Type ListViewItem}">
-                                    <EventSetter Event="MouseDoubleClick" Handler="lwRepairOrders_MouseDoubleClick" />
+                                    <EventSetter Event="MouseDoubleClick" Handler="lvRepairOrders_MouseDoubleClick" />
                                 </Style>
                             </ListView.Resources>
                             <ListView.ItemTemplate>
@@ -42,7 +42,7 @@
                                             <TextBlock Margin="3">
                                                 <Run FontSize="20" Text="{Binding Path=ClientName, FallbackValue=ClientName}" />
                                                 <LineBreak />
-                                                Мастер: <Run Text="{Binding Path=Master.Name, FallbackValue=Master.Name}" />
+                                                Мастер: <Run Text="{Binding Path=Master.FullName, Mode=OneWay, FallbackValue=Master.FullName}" />
                                             </TextBlock>
                                         </StackPanel>
                                     </DockPanel>
@@ -56,10 +56,10 @@
                     <DockPanel>
                         <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddService_Click">Добавить услугу</Button>
 
-                        <ListView x:Name="lwServices" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
+                        <ListView x:Name="lvServices" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
                             <ListView.Resources>
                                 <Style TargetType="{x:Type ListViewItem}">
-                                    <EventSetter Event="MouseDoubleClick" Handler="lwServices_MouseDoubleClick" />
+                                    <EventSetter Event="MouseDoubleClick" Handler="lvServices_MouseDoubleClick" />
                                 </Style>
                             </ListView.Resources>
                             <ListView.ItemTemplate>
@@ -88,10 +88,10 @@
                     <DockPanel>
                         <Button DockPanel.Dock="Bottom" Width="auto" HorizontalAlignment="Left" Click="AddWarehouseItem_Click">Добавить предмет</Button>
 
-                        <ListView x:Name="lwWarehouseItems" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
+                        <ListView x:Name="lvWarehouseItems" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
                             <ListView.Resources>
                                 <Style TargetType="{x:Type ListViewItem}">
-                                    <EventSetter Event="MouseDoubleClick" Handler="lwWarehouse_MouseDoubleClick" />
+                                    <EventSetter Event="MouseDoubleClick" Handler="lvWarehouse_MouseDoubleClick" />
                                 </Style>
                             </ListView.Resources>
                             <ListView.ItemTemplate>
@@ -99,9 +99,10 @@
                                     <StackPanel Orientation="Horizontal">
                                         <fa:ImageAwesome Icon="Gears" Width="45" Margin="3" />
                                         <TextBlock Margin="3">
-                                                <Run FontSize="20" Text="{Binding Path=Name, FallbackValue=Name}" />
-                                                <LineBreak />
-                                                <Run Text="{Binding Path=Manufacturer, FallbackValue=Manufacturer}" />
+                                            <Run FontSize="20" Text="{Binding Path=Name, FallbackValue=Name}" />
+                                            <Run FontSize="20" Text="{Binding Path=Amount, Mode=OneWay, StringFormat='({0} ед.)', FallbackValue='(Amount ед.)'}" />
+                                            <LineBreak />
+                                            <Run Text="{Binding Path=Manufacturer, FallbackValue=Manufacturer}" />
                                         </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
@@ -114,10 +115,10 @@
                     <DockPanel>
                         <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddWarehouseProvider_Click">Добавить поставщика</Button>
 
-                        <ListView x:Name="lwWarehouseProviders" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
+                        <ListView x:Name="lvWarehouseProviders" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
                             <ListView.Resources>
                                 <Style TargetType="{x:Type ListViewItem}">
-                                    <EventSetter Event="MouseDoubleClick" Handler="lwProviders_MouseDoubleClick" />
+                                    <EventSetter Event="MouseDoubleClick" Handler="lvProviders_MouseDoubleClick" />
                                 </Style>
                             </ListView.Resources>
                             <ListView.ItemTemplate>
@@ -145,10 +146,10 @@
                     <Button HorizontalAlignment="Right">Управление выплатами</Button>
                 </DockPanel>
 
-                <ListView x:Name="lwEmployees" Grid.ColumnSpan="2" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
+                <ListView x:Name="lvEmployees" Grid.ColumnSpan="2" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
                     <ListView.Resources>
                         <Style TargetType="{x:Type ListViewItem}">
-                            <EventSetter Event="MouseDoubleClick" Handler="lwEmployees_MouseDoubleClick" />
+                            <EventSetter Event="MouseDoubleClick" Handler="lvEmployees_MouseDoubleClick" />
                         </Style>
                     </ListView.Resources>
                     <ListView.ItemTemplate>

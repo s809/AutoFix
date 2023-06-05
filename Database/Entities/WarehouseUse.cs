@@ -9,7 +9,7 @@ namespace AutoFix
         public RepairOrder? RepairOrder { get; set; }
 
         public int ItemId { get; set; }
-        [Required(ErrorMessage = "Не указана предмет.")]
+        [Required(ErrorMessage = "Не указан предмет.")]
         public WarehouseItem? Item { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "Должна быть использована минимум 1 единица предмета.")]

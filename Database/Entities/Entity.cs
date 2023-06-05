@@ -23,8 +23,8 @@ namespace AutoFix
 
         public bool Save()
         {
-            var validationResults = Validate();
-            if (validationResults.Any())
+            var validationResults = Validate().ToList();
+            if (validationResults.Count > 0)
             {
                 MessageBox.Show(string.Join("\n", validationResults), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
@@ -57,12 +57,12 @@ namespace AutoFix
         protected virtual void OnClone(object cloned) { }
         protected static void CloneCollection<T>(ObservableCollection<T> original, out ObservableCollection<T> cloned) where T : Entity
         {
-            cloned = new ObservableCollection<T>(original);
+            cloned = new ObservableCollection<T>(original.Select(e => (T)e.Clone()));
         }
 
         public static T Clone<T>(object entity) where T : Entity => (T)((T)entity).Clone();
 
-        protected void UpdateCollection<T>(AppDbContext ctx, IEnumerable<T> inDb, IEnumerable<T> updated) where T : Entity
+        protected static void UpdateCollection<T>(AppDbContext ctx, IEnumerable<T> inDb, IEnumerable<T> updated) where T : Entity
         {
             ctx.RemoveRange(inDb.Except(updated, EqualityComparer));
             foreach (var entity in updated)

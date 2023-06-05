@@ -17,6 +17,10 @@ namespace AutoFix
         public decimal Price { get; set; }
 
         public ObservableCollection<WarehouseRestock> Restocks { get => restocks; set => restocks = value; }
+        public ObservableCollection<WarehouseUse> Uses { get; set; } = new();
+
+        public int Amount => Restocks.Sum(r => r.Amount) - Uses.Sum(u => u.Amount);
+
         protected override void OnClone(object cloned)
         {
             CloneCollection(restocks, out ((WarehouseItem)cloned).restocks);
@@ -24,8 +28,16 @@ namespace AutoFix
 
         protected override IEnumerable<string> OnValidate()
         {
-            foreach (var error in restocks.SelectMany(r => r.Validate()))
+            var restocksErrors = restocks.SelectMany(r => r.Validate());
+            foreach (var error in restocksErrors)
                 yield return error;
+
+            if (!restocksErrors.Any())
+            {
+                var result = restocks.Sum(r => r.Amount) - Uses.Sum(u => u.Amount);
+                if (result < 0)
+                    yield return $"Не хватает {-result} ед. предмета.";
+            }
         }
 
         public override void OnSave(AppDbContext ctx)
@@ -35,7 +47,7 @@ namespace AutoFix
 
         public override string ToString()
         {
-            return $"{Name} ({Manufacturer})";
+            return $"{Manufacturer} {Name} ({Amount} ед.)";
         }
     }
 }

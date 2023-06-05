@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
@@ -52,8 +53,26 @@ namespace AutoFix
 
             foreach (var error in History.SelectMany(entry => entry.Validate()))
                 yield return error;
-            foreach (var error in WarehouseUses.SelectMany(entry => entry.Validate()))
+            var usesErrors = WarehouseUses.SelectMany(entry => entry.Validate());
+            foreach (var error in usesErrors)
                 yield return error;
+
+            if (!usesErrors.Any())
+            {
+                var itemUseAmounts = WarehouseUses.GroupBy(u => u.Item!.Id).Select(g => new
+                {
+                    Item = g.First().Item!,
+                    Amount = g.Sum(u => u.Amount)
+                });
+
+                foreach (var itemUseAmount in itemUseAmounts)
+                {
+                    var fullUseAmount = itemUseAmount.Amount + itemUseAmount.Item.Uses.Where(u => u.RepairOrderId != Id).Sum(u => u.Amount);
+                    var result = itemUseAmount.Item.Restocks.Sum(r => r.Amount) - fullUseAmount;
+                    if (result < 0)
+                        yield return $"Не хватает {-result} ед. предмета {itemUseAmount.Item}.";
+                }
+            }
         }
 
         public override void OnSave(AppDbContext ctx)
