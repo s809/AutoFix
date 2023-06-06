@@ -52,6 +52,16 @@ namespace AutoFix
             using var ctx = new AppDbContext();
             return new ObservableCollection<Employee>(
                 ctx.Employees
+                .Where(e => !e.IsDeleted && e.EndDate == null)
+                .Include(e => e.Payouts)
+            );
+        }
+
+        public static ObservableCollection<Employee> GetAllEmployeesWithLeft()
+        {
+            using var ctx = new AppDbContext();
+            return new ObservableCollection<Employee>(
+                ctx.Employees
                 .Where(e => !e.IsDeleted)
                 .Include(e => e.Payouts)
             );

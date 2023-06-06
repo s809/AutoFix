@@ -20,12 +20,27 @@
             <Setter Property="Padding" Value="3" />
             <Setter Property="Height" Value="25" />
         </Style>
+        <x:Array x:Key="allEmployeesOption" Type="sys:String">
+            <sys:String>Все сотрудники</sys:String>
+        </x:Array>
     </Window.Resources>
     <TabControl Margin="3">
         <TabItem Header="Ремонт">
             <TabControl Margin="3">
                 <TabItem Header="Записи">
                     <DockPanel>
+                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0 5">
+                            <ComboBox Margin="5 0" x:Name="filterOrdersByEmployeeBox" SelectedIndex="0" SelectionChanged="filterOrdersByEmployeeBox_SelectionChanged">
+                                <ComboBox.ItemsSource>
+                                    <CompositeCollection>
+                                        <CollectionContainer Collection="{Binding Source={StaticResource allEmployeesOption}}" />
+                                        <CollectionContainer x:Name="filterOrdersByEmployeeBox_list" />
+                                    </CompositeCollection>
+                                </ComboBox.ItemsSource>
+                            </ComboBox>
+                            <CheckBox Margin="5 0" x:Name="showFinishedOrdersBox" Checked="ShowFinishedOrdersBox_Checked" Unchecked="ShowFinishedOrdersBox_Unchecked" VerticalAlignment="Center">Показать завершенные</CheckBox>
+                        </StackPanel>
+
                         <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddRepairOrder_Click">Добавить запись</Button>
 
                         <ListView x:Name="lvRepairOrders" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
@@ -40,9 +55,9 @@
                                         <StackPanel Orientation="Horizontal">
                                             <fa:ImageAwesome Icon="Car" Width="45" Margin="3" />
                                             <TextBlock Margin="3">
-                                                <Run FontSize="20" Text="{Binding Path=ClientName, FallbackValue=ClientName}" />
+                                                <Run FontSize="20" Text="{Binding Mode=OneWay, FallbackValue=ClientName}" />
                                                 <LineBreak />
-                                                Мастер: <Run Text="{Binding Path=Master.FullName, Mode=OneWay, FallbackValue=Master.FullName}" />
+                                                Мастер: <Run Text="{Binding Path=Master, Mode=OneWay, FallbackValue=Master}" />
                                             </TextBlock>
                                         </StackPanel>
                                     </DockPanel>
@@ -125,7 +140,7 @@
                                 <DataTemplate DataType="local:WarehouseProvider">
                                     <StackPanel Orientation="Horizontal">
                                         <fa:ImageAwesome Icon="Truck" Width="45" Margin="3" />
-                                        <TextBlock Margin="3">
+                                        <TextBlock Margin="3" TextWrapping="Wrap">
                                             <Run FontSize="20" Text="{Binding Path=Name, FallbackValue=Name}" />
                                             <LineBreak />
                                             <Run Text="{Binding Path=ContactInfo, FallbackValue=ContactInfo}" />
@@ -141,6 +156,7 @@
 
         <TabItem Header="Сотрудники">
             <DockPanel>
+                <CheckBox DockPanel.Dock="Top" Margin="5" x:Name="showLeftEmployeesBox" Checked="ShowLeftEmployeesBox_Checked" Unchecked="ShowLeftEmployeesBox_Unchecked">Показать уволенных</CheckBox>
                 <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddEmployee_Click">Добавить сотрудника</Button>
 
                 <ListView x:Name="lvEmployees" Grid.ColumnSpan="2" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
@@ -154,7 +170,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <fa:ImageAwesome Icon="User" Width="45" Height="45" Margin="3" />
                                 <TextBlock Grid.Column="1" Margin="3">
-                                    <Run FontSize="20" Text="{Binding Path=FullName, Mode=OneTime, FallbackValue=FullName}" />
+                                    <Run FontSize="20" Text="{Binding Mode=OneTime, FallbackValue=FullName}" />
                                     <LineBreak />
                                     <Run Text="{Binding Path=Position, FallbackValue=Position}" />
                                 </TextBlock>

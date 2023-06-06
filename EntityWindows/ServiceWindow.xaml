@@ -13,7 +13,7 @@
         <TextBlock>Название</TextBlock>
         <TextBox Margin="0 0 0 5" Text="{Binding Name}" />
 
-        <TextBlock>Стоимость</TextBlock>
+        <TextBlock>Стоимость, руб.</TextBlock>
         <local:NumberBox Margin="0 0 0 5" Text="{Binding Price}" />
 
         <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">

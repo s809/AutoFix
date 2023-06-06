@@ -49,7 +49,7 @@
             </Grid>
 
             <TextBlock>Паспортные данные</TextBlock>
-            <TextBox Height="60" Text="{Binding PassportInfo}" />
+            <TextBox Height="60" Text="{Binding PassportInfo}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
         </StackPanel>
 
         <StackPanel Margin="3" Grid.Column="1">
@@ -68,7 +68,7 @@
             <DatePicker SelectedDate="{Binding EndDate, Converter={StaticResource dateConverter}}" Margin="0,0,0,6" />
 
             <TextBlock>Причина увольнения</TextBlock>
-            <TextBox Height="60" Text="{Binding EndReason}" />
+            <TextBox Height="60" Text="{Binding EndReason}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
         </StackPanel>
 
         <StackPanel Margin="3" Grid.Row="2">

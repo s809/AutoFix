@@ -2,15 +2,35 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace AutoFix
 {
-    public class RepairOrder : Entity
+    public class RepairOrder : Entity, INotifyPropertyChanged
     {
         private ObservableCollection<ServiceHistoryEntry> history = new();
         private ObservableCollection<WarehouseUse> warehouseUses = new();
+        private decimal acceptedAmount;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private void UpdateTotalFieldsByHistory(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            foreach (var entry in e.OldItems ?? new List<object>())
+                ((ServiceHistoryEntry)entry).PropertyChanged -= UpdateTotalFieldsBySingleServiceUse;
+            foreach (var entry in e.NewItems ?? new List<object>())
+                ((ServiceHistoryEntry)entry).PropertyChanged += UpdateTotalFieldsBySingleServiceUse;
+
+            UpdateTotalFields();
+        }
+        private void UpdateTotalFieldsBySingleServiceUse(object? sender, PropertyChangedEventArgs e) => UpdateTotalFields();
+        private void UpdateTotalFields()
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TotalCost)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ChangeAmount)));
+        }
 
         public int MasterId { get; set; }
         public Employee? Master { get; set; }
@@ -29,7 +49,6 @@ namespace AutoFix
         [Required(ErrorMessage = "Не указан год выпуска автомобиля.")]
         public int VehicleYear { get; set; } = DateTime.Now.Year;
 
-
         public DateOnly StartDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
         public DateOnly? FinishDate { get; set; }
         public bool IsCancelled { get; set; }
@@ -38,10 +57,26 @@ namespace AutoFix
         public ObservableCollection<ServiceHistoryEntry> History { get => history; set => history = value; }
         public ObservableCollection<WarehouseUse> WarehouseUses { get => warehouseUses; set => warehouseUses = value; }
 
+        public decimal TotalCost => History.Sum(i => i.Service?.Price ?? 0);
+        [Range(0, double.MaxValue, ErrorMessage = "Внесенная сумма должна быть выше 0.")]
+        public decimal AcceptedAmount
+        {
+            get => acceptedAmount;
+            set
+            {
+                acceptedAmount = value;
+                UpdateTotalFields();
+            }
+        }
+        public decimal ChangeAmount => AcceptedAmount > TotalCost ? AcceptedAmount - TotalCost : 0;
+
         protected override void OnClone(object cloned)
         {
             CloneCollection(history, out ((RepairOrder)cloned).history);
             CloneCollection(warehouseUses, out ((RepairOrder)cloned).warehouseUses);
+            ((RepairOrder)cloned).history.CollectionChanged += ((RepairOrder)cloned).UpdateTotalFieldsByHistory;
+            foreach (var entry in ((RepairOrder)cloned).history)
+                entry.PropertyChanged += ((RepairOrder)cloned).UpdateTotalFieldsBySingleServiceUse;
         }
 
         protected override IEnumerable<string> OnValidate()
@@ -90,6 +125,11 @@ namespace AutoFix
             UpdateCollection(ctx, ctx.WarehouseUses.Where(wu => wu.RepairOrderId == Id), Enumerable.Empty<WarehouseUse>());
             ctx.SaveChanges();
             return base.Delete();
+        }
+
+        public override string ToString()
+        {
+            return $"{ClientName}{(FinishDate != null ? $" (Завершена {FinishDate})" : "")}";
         }
     }
 }

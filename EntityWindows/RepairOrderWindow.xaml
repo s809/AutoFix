@@ -58,7 +58,7 @@
             <CheckBox Margin="0 0 0 5" IsChecked="{Binding IsCancelled}">Отменен</CheckBox>
 
             <TextBlock>Комментарии</TextBlock>
-            <TextBox Height="50" Text="{Binding Comments}" />
+            <TextBox Height="70" Text="{Binding Comments}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
         </StackPanel>
 
         <DockPanel Grid.Column="1" Margin="5">
@@ -108,9 +108,20 @@
             </DataGrid>
         </DockPanel>
 
-        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Margin="3" Width="150" Height="30" Click="SaveButton_Click">Сохранить</Button>
-            <Button Margin="3" Width="150" Height="30" Click="DeleteButton_Click">Удалить</Button>
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <TextBlock VerticalAlignment="Center" Margin="5">Итого, руб.:</TextBlock>
+            <TextBox Text="{Binding TotalCost, Mode=OneWay}" VerticalAlignment="Center" Width="50" IsReadOnly="True" />
+
+            <TextBlock VerticalAlignment="Center" Margin="5">Внесено, руб.:</TextBlock>
+            <local:NumberBox Text="{Binding AcceptedAmount}" VerticalAlignment="Center" Width="50" KeyDown="AcceptedAmountBox_OnEnter" />
+
+            <TextBlock VerticalAlignment="Center" Margin="5">Сдача, руб.:</TextBlock>
+            <TextBox Text="{Binding ChangeAmount, Mode=OneWay}" VerticalAlignment="Center" Width="50" IsReadOnly="True" />
+        </StackPanel>
+        
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Margin="6" Width="150" Height="30" Click="SaveButton_Click">Сохранить</Button>
+            <Button Margin="6" Width="150" Height="30" Click="DeleteButton_Click">Удалить</Button>
         </StackPanel>
     </Grid>
 </local:EntityWindow>

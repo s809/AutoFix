@@ -18,7 +18,7 @@ namespace AutoFix
         [Required(ErrorMessage = "Не указано отчество сотрудника.")]
         public string Patronymic { get; set; } = "";
 
-        public string FullName => $"{Surname} {Name} {Patronymic}{(App.LoggedInEmployee?.Id == Id ? " (Вы)" : "")}";
+        public string FullName => $"{Surname} {Name} {Patronymic}";
 
         [Required(ErrorMessage = "Не указаны паспортные данные.")]
         public string PassportInfo { get; set; } = "";
@@ -48,6 +48,8 @@ namespace AutoFix
                 yield return "Дата и причина увольнения не могут присутствовать раздельно.";
             if (EndDate != null && EndDate < StartDate)
                 yield return "Дата увольнения не может раньше даты наема.";
+            if (App.LoggedInEmployee?.Id == Id && EndDate != null)
+                yield return "Невозможно уволить себя.";
 
             foreach (var error in Payouts.SelectMany(payout => payout.Validate()))
                 yield return error;
@@ -89,6 +91,6 @@ namespace AutoFix
             return base.Delete();
         }
 
-        public override string ToString() => FullName;
+        public override string ToString() => $"{FullName}{(App.LoggedInEmployee?.Id == Id ? " (Вы)" : "")}{(EndDate != null ? $" (Уволен {EndDate})" : "")}";
     }
 }

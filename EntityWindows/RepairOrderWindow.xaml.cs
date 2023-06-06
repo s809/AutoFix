@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 
 namespace AutoFix
 {
@@ -35,6 +36,12 @@ namespace AutoFix
                     warehouseItems.Add(use.Item!);
             }
             warehouseItemBox.ItemsSource = warehouseItems;
+        }
+
+        private void AcceptedAmountBox_OnEnter(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                _entity.AcceptedAmount = int.Parse(((NumberBox)sender).Text);
         }
     }
 }
