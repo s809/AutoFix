@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace AutoFix
 {
@@ -30,6 +31,11 @@ namespace AutoFix
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TotalCost)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ChangeAmount)));
+        }
+
+        public RepairOrder()
+        {
+            history.CollectionChanged += UpdateTotalFieldsByHistory;
         }
 
         public int MasterId { get; set; }
@@ -129,7 +135,7 @@ namespace AutoFix
 
         public override string ToString()
         {
-            return $"{ClientName}{(FinishDate != null ? $" (Завершена {FinishDate})" : "")}";
+            return $"{ClientName}{(FinishDate != null ? $" ({(IsCancelled ? "Отменена" : "Завершена")} {FinishDate})" : "")}";
         }
     }
 }

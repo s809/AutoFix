@@ -10,7 +10,10 @@ namespace AutoFix
 {
     public static class DbUtils
     {
-        public static (ObservableCollection<T>, int) WithSelectedIndex<T>(this ObservableCollection<T> collection, int id) where T : Entity
-            => (collection, Math.Max(0, collection.IndexOf(collection.FirstOrDefault(e => e.Id == id)!)));
+        public static (ObservableCollection<T>, int) WithSelectedIndex<T>(this ObservableCollection<T> collection, int? id, int addToIndex = 0) where T : Entity
+        {
+            var foundIndex = collection.IndexOf(collection.FirstOrDefault(e => e.Id == id)!);
+            return (collection, foundIndex == -1 ? 0 : foundIndex + addToIndex);
+        }
     }
 }

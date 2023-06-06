@@ -45,7 +45,7 @@ namespace AutoFix
             lvRepairOrders.ItemsSource = AppDbContext.GetAllRepairOrders();
             lvServices.ItemsSource = AppDbContext.GetAllServices();
 
-            filterOrdersByEmployeeBox_list.Collection = AppDbContext.GetAllEmployees();
+            (filterOrdersByEmployeeBox_list.Collection, filterOrdersByEmployeeBox.SelectedIndex) = AppDbContext.GetAllEmployees().WithSelectedIndex((filterOrdersByEmployeeBox.SelectedItem as Employee)?.Id, 1);
             FilterEmployees();
             FilterRepairOrders();
         }

@@ -80,9 +80,9 @@ namespace AutoFix
             }
 
             using var ctx = new AppDbContext();
-            if (ctx.RepairOrders.Any(ro => !ro.IsDeleted && ro.MasterId == Id))
+            if (ctx.RepairOrders.Any(ro => !ro.IsDeleted && ro.FinishDate == null && ro.MasterId == Id))
             {
-                MessageBox.Show("Мастер имеет привязанные к нему заявки на ремонт.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Мастер имеет привязанные к нему невыполненные заявки на ремонт.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
             UpdateCollection(ctx, ctx.EmployeePayouts.Where(ep => ep.EmployeeId == Id), Enumerable.Empty<EmployeePayout>());

@@ -54,6 +54,8 @@ namespace AutoFix
                 ctx.Employees
                 .Where(e => !e.IsDeleted && e.EndDate == null)
                 .Include(e => e.Payouts)
+                .AsEnumerable()
+                .OrderBy(e => e.FullName)
             );
         }
 
@@ -64,6 +66,8 @@ namespace AutoFix
                 ctx.Employees
                 .Where(e => !e.IsDeleted)
                 .Include(e => e.Payouts)
+                .AsEnumerable()
+                .OrderBy(e => e.FullName)
             );
         }
 
@@ -75,6 +79,7 @@ namespace AutoFix
                 .Where(e => !e.IsDeleted)
                 .Include(i => i.Restocks).ThenInclude(r => r.Provider)
                 .Include(i => i.Uses)
+                .OrderBy(i => i.Name)
             );
         }
 
@@ -84,6 +89,7 @@ namespace AutoFix
             return new ObservableCollection<WarehouseProvider>(
                 ctx.WarehouseProviders
                 .Where(e => !e.IsDeleted)
+                .OrderBy(i => i.Name)
             );
         }
 
@@ -96,6 +102,7 @@ namespace AutoFix
                 .Include(ro => ro.History).ThenInclude(sh => sh.Service)
                 .Include(ro => ro.WarehouseUses).ThenInclude(u => u.Item)
                 .Include(ro => ro.Master)
+                .OrderByDescending(i => i.StartDate)
             );
         }
 
@@ -105,6 +112,7 @@ namespace AutoFix
             return new ObservableCollection<Service>(
                 ctx.Services
                 .Where(e => !e.IsDeleted)
+                .OrderBy(i => i.Name)
             );
         }
     }
