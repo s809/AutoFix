@@ -31,6 +31,7 @@ namespace AutoFix
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(TotalCost)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ChangeAmount)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsUnpaid)));
         }
 
         public RepairOrder()
@@ -75,6 +76,7 @@ namespace AutoFix
             }
         }
         public decimal ChangeAmount => AcceptedAmount > TotalCost ? AcceptedAmount - TotalCost : 0;
+        public bool IsUnpaid => AcceptedAmount < TotalCost;
 
         protected override void OnClone(object cloned)
         {

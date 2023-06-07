@@ -25,13 +25,14 @@ namespace AutoFix
             else
             {
                 MessageBox.Show("При первом запуске необходимо создать учетную запись сотрудника.", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
-                if (new EmployeeWindow(new Employee()).ShowDialog() != true)
+                if (new EmployeeWindow(new Employee() { IsAdministrator = true }).ShowDialog() != true)
                 {
                     Close();
                     return;
                 }
             }
 
+            employeesTab.Visibility = App.LoggedInEmployee!.IsAdministrator ? Visibility.Visible : Visibility.Collapsed;
             Refresh();
         }
 

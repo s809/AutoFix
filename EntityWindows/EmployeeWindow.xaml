@@ -57,7 +57,7 @@
             <TextBox x:Name="positionBox" Text="{Binding Position}" Margin="0,0,0,6" />
 
             <TextBlock>Оклад, руб.</TextBlock>
-            <local:NumberBox Text="{Binding BaseSalary}" />
+            <local:NumberBox Text="{Binding BaseSalary}" Margin="0,0,0,6" />
         </StackPanel>
 
         <StackPanel Margin="3" Grid.Row="1">
@@ -65,10 +65,10 @@
             <DatePicker SelectedDate="{Binding StartDate, Converter={StaticResource dateConverter}}" Margin="0,0,0,6" />
 
             <TextBlock>Дата увольнения</TextBlock>
-            <DatePicker SelectedDate="{Binding EndDate, Converter={StaticResource dateConverter}}" Margin="0,0,0,6" />
+            <DatePicker SelectedDate="{Binding EndDate, Converter={StaticResource dateConverter}}" Margin="0,0,0,6" IsEnabled="{Binding AllowDestructiveActions}" />
 
             <TextBlock>Причина увольнения</TextBlock>
-            <TextBox Height="60" Text="{Binding EndReason}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
+            <TextBox Height="60" Text="{Binding EndReason}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" IsEnabled="{Binding AllowDestructiveActions}" />
         </StackPanel>
 
         <StackPanel Margin="3" Grid.Row="2">
@@ -76,13 +76,15 @@
             <TextBox Text="{Binding Username}" Margin="0,0,0,6" />
 
             <TextBlock>Пароль</TextBlock>
-            <PasswordBox x:Name="passwordBox" PasswordChanged="PasswordBox_PasswordChanged" />
+            <PasswordBox x:Name="passwordBox" Margin="0,0,0,6" PasswordChanged="PasswordBox_PasswordChanged" />
+
+            <CheckBox IsChecked="{Binding IsAdministrator}" IsEnabled="{Binding AllowDestructiveActions}">Администратор</CheckBox>
         </StackPanel>
 
         <DockPanel Margin="3" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
             <TextBlock DockPanel.Dock="Top">Выплаты</TextBlock>
 
-            <DataGrid ItemsSource="{Binding Payouts}" AutoGenerateColumns="False">
+            <DataGrid ItemsSource="{Binding Payouts}" AutoGenerateColumns="False" CanUserSortColumns="False">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Width="4*" Header="Дата">
                         <DataGridTemplateColumn.CellTemplate>
@@ -104,7 +106,7 @@
 
         <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Margin="3" Width="150" Height="30" Click="SaveButton_Click">Сохранить</Button>
-            <Button Margin="3" Width="150" Height="30" Click="DeleteButton_Click">Удалить</Button>
+            <Button Margin="3" Width="150" Height="30" IsEnabled="{Binding AllowDestructiveActions}" Click="DeleteButton_Click">Удалить</Button>
         </StackPanel>
     </Grid>
 </local:EntityWindow>

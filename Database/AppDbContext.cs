@@ -38,7 +38,7 @@ namespace AutoFix
         public static Employee? FindLoginEmployee(string username, string password)
         {
             using var ctx = new AppDbContext();
-            return ctx.Employees.FirstOrDefault(e => !e.IsDeleted && e.Username == username && e.Password == password);
+            return ctx.Employees.FirstOrDefault(e => !e.IsDeleted && e.EndDate == null && e.Username == username && e.Password == password);
         }
 
         public static int CountEmployees()
@@ -53,7 +53,6 @@ namespace AutoFix
             return new ObservableCollection<Employee>(
                 ctx.Employees
                 .Where(e => !e.IsDeleted && e.EndDate == null)
-                .Include(e => e.Payouts)
                 .AsEnumerable()
                 .OrderBy(e => e.FullName)
             );
@@ -65,7 +64,7 @@ namespace AutoFix
             return new ObservableCollection<Employee>(
                 ctx.Employees
                 .Where(e => !e.IsDeleted)
-                .Include(e => e.Payouts)
+                .Include(e => e.Payouts.OrderBy(p => p.Date))
                 .AsEnumerable()
                 .OrderBy(e => e.FullName)
             );
@@ -77,7 +76,7 @@ namespace AutoFix
             return new ObservableCollection<WarehouseItem>(
                 ctx.WarehouseItems
                 .Where(e => !e.IsDeleted)
-                .Include(i => i.Restocks).ThenInclude(r => r.Provider)
+                .Include(i => i.Restocks.OrderBy(r => r.Provider!.Name)).ThenInclude(r => r.Provider)
                 .Include(i => i.Uses)
                 .OrderBy(i => i.Name)
             );
@@ -99,8 +98,8 @@ namespace AutoFix
             return new ObservableCollection<RepairOrder>(
                 ctx.RepairOrders
                 .Where(e => !e.IsDeleted)
-                .Include(ro => ro.History).ThenInclude(sh => sh.Service)
-                .Include(ro => ro.WarehouseUses).ThenInclude(u => u.Item)
+                .Include(ro => ro.History.OrderBy(e => e.StartDate)).ThenInclude(sh => sh.Service)
+                .Include(ro => ro.WarehouseUses.OrderBy(r => r.Item!.Name)).ThenInclude(u => u.Item)
                 .Include(ro => ro.Master)
                 .OrderByDescending(i => i.StartDate)
             );

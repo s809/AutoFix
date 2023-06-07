@@ -23,6 +23,7 @@
         <x:Array x:Key="allEmployeesOption" Type="sys:String">
             <sys:String>Все сотрудники</sys:String>
         </x:Array>
+        <local:VisibilityConverter x:Key="visibilityConverter" />
     </Window.Resources>
     <TabControl Margin="3">
         <TabItem Header="Ремонт">
@@ -154,7 +155,7 @@
             </TabControl>
         </TabItem>
 
-        <TabItem Header="Сотрудники">
+        <TabItem Header="Сотрудники" x:Name="employeesTab">
             <DockPanel>
                 <CheckBox DockPanel.Dock="Top" Margin="5" x:Name="showLeftEmployeesBox" Checked="ShowLeftEmployeesBox_Checked" Unchecked="ShowLeftEmployeesBox_Unchecked">Показать уволенных</CheckBox>
                 <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddEmployee_Click">Добавить сотрудника</Button>
