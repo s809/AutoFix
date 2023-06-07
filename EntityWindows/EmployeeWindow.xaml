@@ -64,11 +64,13 @@
             <TextBlock>Дата наема</TextBlock>
             <DatePicker SelectedDate="{Binding StartDate, Converter={StaticResource dateConverter}}" Margin="0,0,0,6" />
 
-            <TextBlock>Дата увольнения</TextBlock>
-            <DatePicker SelectedDate="{Binding EndDate, Converter={StaticResource dateConverter}}" Margin="0,0,0,6" IsEnabled="{Binding AllowDestructiveActions}" />
+            <StackPanel IsEnabled="{Binding AllowDestructiveActions}">
+                <TextBlock>Дата увольнения</TextBlock>
+                <DatePicker SelectedDate="{Binding EndDate, Converter={StaticResource dateConverter}}" Margin="0,0,0,6" />
 
-            <TextBlock>Причина увольнения</TextBlock>
-            <TextBox Height="60" Text="{Binding EndReason}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" IsEnabled="{Binding AllowDestructiveActions}" />
+                <TextBlock>Причина увольнения</TextBlock>
+                <TextBox Height="60" Text="{Binding EndReason}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
+            </StackPanel>
         </StackPanel>
 
         <StackPanel Margin="3" Grid.Row="2">

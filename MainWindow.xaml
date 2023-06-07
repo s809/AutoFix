@@ -31,7 +31,7 @@
                 <TabItem Header="Записи">
                     <DockPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0 5">
-                            <ComboBox Margin="5 0" x:Name="filterOrdersByEmployeeBox" SelectedIndex="0" SelectionChanged="filterOrdersByEmployeeBox_SelectionChanged">
+                            <ComboBox Margin="5 0" x:Name="filterOrdersByEmployeeBox" SelectedIndex="0" SelectionChanged="filterOrdersByEmployeeBox_SelectionChanged" Visibility="{Binding IsAdministrator, Converter={StaticResource visibilityConverter}}">
                                 <ComboBox.ItemsSource>
                                     <CompositeCollection>
                                         <CollectionContainer Collection="{Binding Source={StaticResource allEmployeesOption}}" />
@@ -155,7 +155,7 @@
             </TabControl>
         </TabItem>
 
-        <TabItem Header="Сотрудники" x:Name="employeesTab">
+        <TabItem Header="Сотрудники" Visibility="{Binding IsAdministrator, Converter={StaticResource visibilityConverter}}">
             <DockPanel>
                 <CheckBox DockPanel.Dock="Top" Margin="5" x:Name="showLeftEmployeesBox" Checked="ShowLeftEmployeesBox_Checked" Unchecked="ShowLeftEmployeesBox_Unchecked">Показать уволенных</CheckBox>
                 <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddEmployee_Click">Добавить сотрудника</Button>

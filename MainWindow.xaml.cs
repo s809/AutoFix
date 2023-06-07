@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -32,7 +34,7 @@ namespace AutoFix
                 }
             }
 
-            employeesTab.Visibility = App.LoggedInEmployee!.IsAdministrator ? Visibility.Visible : Visibility.Collapsed;
+            DataContext = App.LoggedInEmployee;
             Refresh();
         }
 
@@ -57,7 +59,7 @@ namespace AutoFix
                 Refresh();
         }
 
-        private void AddRepairOrder_Click(object sender, RoutedEventArgs e) => ShowAddOrEditDialog(new RepairOrderWindow());
+        private void AddRepairOrder_Click(object sender, RoutedEventArgs e) => ShowAddOrEditDialog(new RepairOrderWindow(new RepairOrder { MasterId = App.LoggedInEmployee!.Id }));
         private void AddWarehouseItem_Click(object sender, RoutedEventArgs e) => ShowAddOrEditDialog(new WarehouseItemWindow());
         private void AddWarehouseProvider_Click(object sender, RoutedEventArgs e) => ShowAddOrEditDialog(new WarehouseProviderWindow());
         private void AddEmployee_Click(object sender, RoutedEventArgs e) => ShowAddOrEditDialog(new EmployeeWindow());
@@ -92,6 +94,9 @@ namespace AutoFix
                 var allowedEmployee = filterOrdersByEmployeeBox.SelectedItem is not Employee;
                 if (!allowedEmployee)
                     allowedEmployee |= ((RepairOrder)item).MasterId == ((Employee)filterOrdersByEmployeeBox.SelectedItem).Id;
+
+                if (!App.LoggedInEmployee!.IsAdministrator)
+                    allowedEmployee &= ((RepairOrder)item).MasterId == App.LoggedInEmployee.Id;
 
                 return allowedFinishDate && allowedEmployee;
             };

@@ -11,7 +11,7 @@ namespace AutoFix
         {
             var boolean = false;
             if (value is bool) boolean = (bool)value;
-            return boolean ? Visibility.Visible : Visibility.Hidden;
+            return boolean ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

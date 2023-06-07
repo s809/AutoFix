@@ -10,10 +10,12 @@ namespace AutoFix
     /// </summary>
     public partial class RepairOrderWindow : EntityWindow<RepairOrder>
     {
-        public RepairOrderWindow(RepairOrder? repairOrder = null) : base(repairOrder)
+        public RepairOrderWindow(RepairOrder repairOrder) : base(repairOrder)
         {
             InitializeComponent();
             (masterBox.ItemsSource, masterBox.SelectedIndex) = AppDbContext.GetAllEmployees().WithSelectedIndex(_entity.MasterId);
+            if (!App.LoggedInEmployee!.IsAdministrator)
+                masterBoxWithLabel.Visibility = Visibility.Collapsed;
 
             var services = AppDbContext.GetAllServices();
             foreach (var entry in _entity.History)
