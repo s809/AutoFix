@@ -13,7 +13,17 @@
     <Window.Resources>
         <local:DateOnlyConverter x:Key="dateConverter" />
         <local:VisibilityConverter x:Key="visibilityConverter" />
-        <CollectionViewSource x:Key="ItemsCVS" Source="{Binding _services}" />
+        <local:EmployeePositionVisibilityConverter x:Key="employeePositionVisibilityConverter" />
+        <local:EmployeePositionIsEnabledConverter x:Key="employeePositionIsEnabledConverter" />
+        
+        <Binding x:Key="showCanEdit" Source="{x:Static local:App.LoggedInEmployee}" Converter="{StaticResource employeePositionVisibilityConverter}" ConverterParameter="ServiceManager,Mechanic" />
+        <Binding x:Key="enableCanEdit" Source="{x:Static local:App.LoggedInEmployee}" Converter="{StaticResource employeePositionIsEnabledConverter}" ConverterParameter="ServiceManager,Mechanic" />
+        
+        <Binding x:Key="showServiceManagerOnly" Source="{x:Static local:App.LoggedInEmployee}" Converter="{StaticResource employeePositionVisibilityConverter}" ConverterParameter="ServiceManager" />
+        <Binding x:Key="enableServiceManagerOnly" Source="{x:Static local:App.LoggedInEmployee}" Converter="{StaticResource employeePositionIsEnabledConverter}" ConverterParameter="ServiceManager" />
+
+        <Binding x:Key="showCanEditOrCashier" Source="{x:Static local:App.LoggedInEmployee}" Converter="{StaticResource employeePositionVisibilityConverter}" ConverterParameter="ServiceManager,Mechanic,Cashier" />
+        <Binding x:Key="enableCashierOnly" Source="{x:Static local:App.LoggedInEmployee}" Converter="{StaticResource employeePositionIsEnabledConverter}" ConverterParameter="Cashier" />
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -28,49 +38,59 @@
         </Grid.RowDefinitions>
 
         <StackPanel Margin="5" Grid.RowSpan="2">
-            <StackPanel x:Name="masterBoxWithLabel">
-                <TextBlock>Мастер</TextBlock>
-                <ComboBox x:Name="masterBox" SelectedItem="{Binding Master}" Margin="0 0 0 5" />
+            <StackPanel IsEnabled="{local:BindingResource enableServiceManagerOnly}">
+                <StackPanel x:Name="masterBoxWithLabel">
+                    <TextBlock>Мастер<Run Foreground="Red">*</Run></TextBlock>
+                    <ComboBox x:Name="masterBox" SelectedItem="{Binding Master}" Margin="0 0 0 5" />
+                </StackPanel>
+
+                <GroupBox Header="Клиент">
+                    <StackPanel Margin="3">
+                        <TextBlock>Имя<Run Foreground="Red">*</Run></TextBlock>
+                        <TextBox Margin="0 0 0 5" Text="{Binding ClientName}" />
+                        <TextBlock>Телефон<Run Foreground="Red">*</Run></TextBlock>
+                        <TextBox Margin="0 0 0 5" Text="{Binding ClientPhoneNumber}" />
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Автомобиль">
+                    <StackPanel Margin="3">
+                        <TextBlock>Производитель<Run Foreground="Red">*</Run></TextBlock>
+                        <TextBox Margin="0 0 0 5" Text="{Binding VehicleManufacturer}" />
+                        <TextBlock>Модель<Run Foreground="Red">*</Run></TextBlock>
+                        <TextBox Margin="0 0 0 5" Text="{Binding VehicleModel}" />
+                        <TextBlock>Год выпуска<Run Foreground="Red">*</Run></TextBlock>
+                        <local:NumberBox Margin="0 0 0 5" Text="{Binding VehicleYear}" />
+                    </StackPanel>
+                </GroupBox>
+                <TextBlock>Дата начала<Run Foreground="Red">*</Run></TextBlock>
+                <DatePicker Margin="0 0 0 5" SelectedDate="{Binding StartDate, Converter={StaticResource dateConverter}}" />
             </StackPanel>
+            <StackPanel IsEnabled="{local:BindingResource enableCanEdit}">
+                <TextBlock>Дата завершения</TextBlock>
+                <DatePicker Margin="0 0 0 5" SelectedDate="{Binding FinishDate, Converter={StaticResource dateConverter}}" />
 
-            <GroupBox Header="Клиент">
-                <StackPanel Margin="3">
-                    <TextBlock>Имя</TextBlock>
-                    <TextBox Margin="0 0 0 5" Text="{Binding ClientName}" />
-                    <TextBlock>Телефон</TextBlock>
-                    <TextBox Margin="0 0 0 5" Text="{Binding ClientPhoneNumber}" />
-                </StackPanel>
-            </GroupBox>
+                <CheckBox Margin="0 0 0 5" IsChecked="{Binding IsCancelled}">Отменен</CheckBox>
 
-            <GroupBox Header="Автомобиль">
-                <StackPanel Margin="3">
-                    <TextBlock>Производитель</TextBlock>
-                    <TextBox Margin="0 0 0 5" Text="{Binding VehicleManufacturer}" />
-                    <TextBlock>Модель</TextBlock>
-                    <TextBox Margin="0 0 0 5" Text="{Binding VehicleModel}" />
-                    <TextBlock>Год выпуска</TextBlock>
-                    <local:NumberBox Margin="0 0 0 5" Text="{Binding VehicleYear}" />
-                </StackPanel>
-            </GroupBox>
-            <TextBlock>Дата начала</TextBlock>
-            <DatePicker Margin="0 0 0 5" SelectedDate="{Binding StartDate, Converter={StaticResource dateConverter}}" />
-
-            <TextBlock>Дата завершения</TextBlock>
-            <DatePicker Margin="0 0 0 5" SelectedDate="{Binding FinishDate, Converter={StaticResource dateConverter}}" />
-
-            <CheckBox Margin="0 0 0 5" IsChecked="{Binding IsCancelled}">Отменен</CheckBox>
-
-            <TextBlock>Комментарии</TextBlock>
-            <TextBox Height="70" Text="{Binding Comments}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
+                <TextBlock>Комментарии</TextBlock>
+                <TextBox Height="70" Text="{Binding Comments}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
+            </StackPanel>
         </StackPanel>
 
-        <DockPanel Grid.Column="1" Margin="5">
+        <DockPanel Grid.Column="1" Margin="5" IsEnabled="{local:BindingResource enableCanEdit}">
             <TextBlock DockPanel.Dock="Top">Выполненные услуги</TextBlock>
 
             <DataGrid ItemsSource="{Binding History}" AutoGenerateColumns="False" CanUserSortColumns="False">
                 <DataGrid.Columns>
-                    <DataGridComboBoxColumn Width="2*" x:Name="serviceBox" Header="Наименование" SelectedItemBinding="{Binding Service}" />
-                    <DataGridTemplateColumn Width="1*" Header="Дата начала">
+                    <DataGridComboBoxColumn Width="2*" x:Name="serviceBox" SelectedItemBinding="{Binding Service}">
+                        <DataGridComboBoxColumn.Header>
+                            <TextBlock>Наименование<Run Foreground="Red">*</Run></TextBlock>
+                        </DataGridComboBoxColumn.Header>
+                    </DataGridComboBoxColumn>
+                    <DataGridTemplateColumn Width="1*">
+                        <DataGridTemplateColumn.Header>
+                            <TextBlock>Дата начала<Run Foreground="Red">*</Run></TextBlock>
+                        </DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding StartDate, ConverterCulture=RU}" />
@@ -100,18 +120,26 @@
             </DataGrid>
         </DockPanel>
 
-        <DockPanel Grid.Column="1" Grid.Row="1" Margin="5">
+        <DockPanel Grid.Column="1" Grid.Row="1" Margin="5" IsEnabled="{local:BindingResource enableCanEdit}">
             <TextBlock DockPanel.Dock="Top">Использованные предметы</TextBlock>
 
             <DataGrid ItemsSource="{Binding WarehouseUses}" AutoGenerateColumns="False" CanUserSortColumns="False">
                 <DataGrid.Columns>
-                    <DataGridComboBoxColumn Width="2*" x:Name="warehouseItemBox" Header="Предмет" SelectedItemBinding="{Binding Item}" />
-                    <DataGridTextColumn Width="1*" Header="Количество" Binding="{Binding Amount}" />
+                    <DataGridComboBoxColumn Width="2*" x:Name="warehouseItemBox" SelectedItemBinding="{Binding Item}">
+                        <DataGridComboBoxColumn.Header>
+                            <TextBlock>Предмет<Run Foreground="Red">*</Run></TextBlock>
+                        </DataGridComboBoxColumn.Header>
+                    </DataGridComboBoxColumn>
+                    <DataGridTextColumn Width="1*" Binding="{Binding Amount}">
+                        <DataGridTextColumn.Header>
+                            <TextBlock>Количество<Run Foreground="Red">*</Run></TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
 
-        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" IsEnabled="{local:BindingResource enableCashierOnly}">
             <TextBlock VerticalAlignment="Center" Margin="5">Итого, руб.:</TextBlock>
             <TextBox Text="{Binding TotalCost, Mode=OneWay}" VerticalAlignment="Center" Width="50" IsReadOnly="True" />
 
@@ -123,10 +151,10 @@
 
             <TextBlock VerticalAlignment="Center" Margin="5" Foreground="Red" Visibility="{Binding IsUnpaid, Converter={StaticResource visibilityConverter}}">Запись не оплачена полностью</TextBlock>
         </StackPanel>
-        
-        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Visibility="{local:BindingResource showCanEditOrCashier}">
             <Button Margin="6" Width="150" Height="30" Click="SaveButton_Click">Сохранить</Button>
-            <Button Margin="6" Width="150" Height="30" Click="DeleteButton_Click">Удалить</Button>
+            <Button Margin="6" Width="150" Height="30" Click="DeleteButton_Click" Visibility="{local:BindingResource showServiceManagerOnly}">Удалить</Button>
         </StackPanel>
     </Grid>
 </local:EntityWindow>

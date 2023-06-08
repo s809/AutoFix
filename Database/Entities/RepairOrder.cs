@@ -15,6 +15,7 @@ namespace AutoFix
         private ObservableCollection<ServiceHistoryEntry> history = new();
         private ObservableCollection<WarehouseUse> warehouseUses = new();
         private decimal acceptedAmount;
+        private bool isCancelled;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void UpdateTotalFieldsByHistory(object? sender, NotifyCollectionChangedEventArgs e)
@@ -41,13 +42,13 @@ namespace AutoFix
 
         public int MasterId { get; set; }
         public Employee? Master { get; set; }
-
+        public bool IsCurrentEmployee => MasterId == App.LoggedInEmployee!.Id;
+        public bool IsNotCurrentEmployee => !IsCurrentEmployee;
 
         [Required(ErrorMessage = "Не указано имя клиента.")]
         public string ClientName { get; set; } = "";
         [Required(ErrorMessage = "Не указан телефон клиента.")]
         public string ClientPhoneNumber { get; set; } = "";
-
 
         [Required(ErrorMessage = "Не указан производитель автомобиля.")]
         public string VehicleManufacturer { get; set; } = "";
@@ -58,13 +59,21 @@ namespace AutoFix
 
         public DateOnly StartDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
         public DateOnly? FinishDate { get; set; }
-        public bool IsCancelled { get; set; }
+        public bool IsCancelled
+        {
+            get => isCancelled;
+            set
+            {
+                isCancelled = value;
+                UpdateTotalFields();
+            }
+        }
         public string Comments { get; set; } = "";
 
         public ObservableCollection<ServiceHistoryEntry> History { get => history; set => history = value; }
         public ObservableCollection<WarehouseUse> WarehouseUses { get => warehouseUses; set => warehouseUses = value; }
 
-        public decimal TotalCost => History.Sum(i => i.Service?.Price ?? 0);
+        public decimal TotalCost => IsCancelled ? 0 : History.Where(i => !i.IsCancelled).Sum(i => i.Service?.Price ?? 0);
         [Range(0, double.MaxValue, ErrorMessage = "Внесенная сумма должна быть выше 0.")]
         public decimal AcceptedAmount
         {

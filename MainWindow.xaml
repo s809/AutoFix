@@ -21,17 +21,18 @@
             <Setter Property="Height" Value="25" />
         </Style>
         <x:Array x:Key="allEmployeesOption" Type="sys:String">
-            <sys:String>Все сотрудники</sys:String>
+            <sys:String>Все мастера</sys:String>
         </x:Array>
         <local:VisibilityConverter x:Key="visibilityConverter" />
+        <local:EmployeePositionVisibilityConverter x:Key="employeePositionVisibilityConverter" />
     </Window.Resources>
-    <TabControl Margin="3">
-        <TabItem Header="Ремонт">
-            <TabControl Margin="3">
+    <TabControl x:Name="tabsRoot" Margin="3">
+        <TabItem Header="Ремонт" Visibility="{Binding Converter={StaticResource employeePositionVisibilityConverter}, ConverterParameter='ServiceManager,Cashier,Accountant,Mechanic'}">
+            <TabControl x:Name="tabsRepair" Margin="3">
                 <TabItem Header="Записи">
                     <DockPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0 5">
-                            <ComboBox Margin="5 0" x:Name="filterOrdersByEmployeeBox" SelectedIndex="0" SelectionChanged="filterOrdersByEmployeeBox_SelectionChanged" Visibility="{Binding IsAdministrator, Converter={StaticResource visibilityConverter}}">
+                            <ComboBox Margin="5 0" x:Name="filterOrdersByEmployeeBox" SelectedIndex="0" SelectionChanged="filterOrdersByEmployeeBox_SelectionChanged" Visibility="{Binding Converter={StaticResource employeePositionVisibilityConverter}, ConverterParameter='ServiceManager,Cashier,Accountant'}">
                                 <ComboBox.ItemsSource>
                                     <CompositeCollection>
                                         <CollectionContainer Collection="{Binding Source={StaticResource allEmployeesOption}}" />
@@ -42,7 +43,7 @@
                             <CheckBox Margin="5 0" x:Name="showFinishedOrdersBox" Checked="ShowFinishedOrdersBox_Checked" Unchecked="ShowFinishedOrdersBox_Unchecked" VerticalAlignment="Center">Показать завершенные</CheckBox>
                         </StackPanel>
 
-                        <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddRepairOrder_Click">Добавить запись</Button>
+                        <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddRepairOrder_Click" Visibility="{Binding Converter={StaticResource employeePositionVisibilityConverter}, ConverterParameter='ServiceManager'}">Добавить запись</Button>
 
                         <ListView x:Name="lvRepairOrders" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
                             <ListView.Resources>
@@ -58,7 +59,15 @@
                                             <TextBlock Margin="3">
                                                 <Run FontSize="20" Text="{Binding Mode=OneWay, FallbackValue=ClientName}" />
                                                 <LineBreak />
-                                                Мастер: <Run Text="{Binding Path=Master, Mode=OneWay, FallbackValue=Master}" />
+                                                <TextBlock Visibility="{Binding IsCurrentEmployee, Converter={StaticResource visibilityConverter}}">
+                                                    Автомобиль:
+                                                    <Run Text="{Binding Path=VehicleManufacturer, Mode=OneWay, FallbackValue=VehicleManufacturer}" />
+                                                    <Run Text="{Binding Path=VehicleModel, Mode=OneWay, FallbackValue=VehicleModel}" />
+                                                    <Run Text="{Binding Path=VehicleYear, Mode=OneWay, FallbackValue=VehicleYear}" />
+                                                </TextBlock>
+                                                <TextBlock Visibility="{Binding IsNotCurrentEmployee, Converter={StaticResource visibilityConverter}}">
+                                                    Мастер: <Run Text="{Binding Path=Master, Mode=OneWay, FallbackValue=Master}" />
+                                                </TextBlock>
                                             </TextBlock>
                                         </StackPanel>
                                     </DockPanel>
@@ -68,7 +77,7 @@
                     </DockPanel>
                 </TabItem>
 
-                <TabItem Header="Услуги">
+                <TabItem Header="Услуги" Visibility="{Binding Converter={StaticResource employeePositionVisibilityConverter}, ConverterParameter='ServiceManager'}">
                     <DockPanel>
                         <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddService_Click">Добавить услугу</Button>
 
@@ -98,11 +107,11 @@
             </TabControl>
         </TabItem>
 
-        <TabItem Header="Склад">
-            <TabControl Margin="3">
+        <TabItem Header="Склад" Visibility="{Binding Converter={StaticResource employeePositionVisibilityConverter}, ConverterParameter='WarehouseManager,Accountant'}">
+            <TabControl x:Name="tabsWarehouse" Margin="3">
                 <TabItem Header="Предметы">
                     <DockPanel>
-                        <Button DockPanel.Dock="Bottom" Width="auto" HorizontalAlignment="Left" Click="AddWarehouseItem_Click">Добавить предмет</Button>
+                        <Button DockPanel.Dock="Bottom" Width="auto" HorizontalAlignment="Left" Click="AddWarehouseItem_Click" Visibility="{Binding Converter={StaticResource employeePositionVisibilityConverter}, ConverterParameter='WarehouseManager'}">Добавить предмет</Button>
 
                         <ListView x:Name="lvWarehouseItems" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
                             <ListView.Resources>
@@ -127,7 +136,7 @@
                     </DockPanel>
                 </TabItem>
 
-                <TabItem Header="Поставщики">
+                <TabItem Header="Поставщики" Visibility="{Binding Converter={StaticResource employeePositionVisibilityConverter}, ConverterParameter='WarehouseManager'}">
                     <DockPanel>
                         <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddWarehouseProvider_Click">Добавить поставщика</Button>
 
@@ -155,10 +164,10 @@
             </TabControl>
         </TabItem>
 
-        <TabItem Header="Сотрудники" Visibility="{Binding IsAdministrator, Converter={StaticResource visibilityConverter}}">
+        <TabItem Header="Сотрудники" Visibility="{Binding Converter={StaticResource employeePositionVisibilityConverter}, ConverterParameter='Accountant'}">
             <DockPanel>
                 <CheckBox DockPanel.Dock="Top" Margin="5" x:Name="showLeftEmployeesBox" Checked="ShowLeftEmployeesBox_Checked" Unchecked="ShowLeftEmployeesBox_Unchecked">Показать уволенных</CheckBox>
-                <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddEmployee_Click">Добавить сотрудника</Button>
+                <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Click="AddEmployee_Click" Visibility="{Binding Converter={StaticResource employeePositionVisibilityConverter}}">Добавить сотрудника</Button>
 
                 <ListView x:Name="lvEmployees" Grid.ColumnSpan="2" ItemsSource="{Binding Source={StaticResource placeholders}}" BorderThickness="0" HorizontalContentAlignment="Stretch">
                     <ListView.Resources>

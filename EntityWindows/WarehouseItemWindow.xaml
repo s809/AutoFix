@@ -9,7 +9,13 @@
         Title="Предмет склада" Width="450" Height="300"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
-    <Grid Margin="5">
+    <Window.Resources>
+        <local:EmployeePositionVisibilityConverter x:Key="employeePositionVisibilityConverter" />
+        <local:EmployeePositionIsEnabledConverter x:Key="employeePositionIsEnabledConverter" />
+        <Binding x:Key="showWarehouseManagerOnly" Source="{x:Static local:App.LoggedInEmployee}" Converter="{StaticResource employeePositionVisibilityConverter}" ConverterParameter="WarehouseManager" />
+        <Binding x:Key="enableWarehouseManagerOnly" Source="{x:Static local:App.LoggedInEmployee}" Converter="{StaticResource employeePositionIsEnabledConverter}" ConverterParameter="WarehouseManager" />
+    </Window.Resources>
+    <Grid Margin="5" IsEnabled="{local:BindingResource enableWarehouseManagerOnly}">
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="auto" />
@@ -19,15 +25,15 @@
             <ColumnDefinition Width="150" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        
+
         <StackPanel Margin="5">
-            <TextBlock>Название</TextBlock>
+            <TextBlock>Название<Run Foreground="Red">*</Run></TextBlock>
             <TextBox Margin="0 0 0 5" Text="{Binding Name}" />
 
-            <TextBlock>Производитель</TextBlock>
+            <TextBlock>Производитель<Run Foreground="Red">*</Run></TextBlock>
             <TextBox Margin="0 0 0 5" Text="{Binding Manufacturer}" />
 
-            <TextBlock>Стоимость</TextBlock>
+            <TextBlock>Стоимость<Run Foreground="Red">*</Run></TextBlock>
             <local:NumberBox Margin="0 0 0 5" Text="{Binding Price}" />
         </StackPanel>
 
@@ -35,13 +41,21 @@
             <TextBlock DockPanel.Dock="Top">Пополнения</TextBlock>
             <DataGrid ItemsSource="{Binding Restocks}" AutoGenerateColumns="False">
                 <DataGrid.Columns>
-                    <DataGridComboBoxColumn Width="2*" x:Name="providerBox" Header="Поставщик" SelectedItemBinding="{Binding Provider}" />
-                    <DataGridTextColumn Width="1*" Header="Количество" Binding="{Binding Amount}" />
+                    <DataGridComboBoxColumn Width="2*" x:Name="providerBox" SelectedItemBinding="{Binding Provider}">
+                        <DataGridComboBoxColumn.Header>
+                            <TextBlock>Поставщик<Run Foreground="Red">*</Run></TextBlock>
+                        </DataGridComboBoxColumn.Header>
+                    </DataGridComboBoxColumn>
+                    <DataGridTextColumn Width="1*" Binding="{Binding Amount}">
+                        <DataGridTextColumn.Header>
+                            <TextBlock>Количество<Run Foreground="Red">*</Run></TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
 
-        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{local:BindingResource showWarehouseManagerOnly}">
             <Button Margin="3" Width="150" Height="30" Click="SaveButton_Click">Сохранить</Button>
             <Button Margin="3" Width="150" Height="30" Click="DeleteButton_Click">Удалить</Button>
         </StackPanel>

@@ -12,6 +12,6 @@ namespace AutoFix
         [Range(1, double.MaxValue, ErrorMessage = "Сумма выплаты должна быть больше 0.")]
         public decimal Amount { get; set; }
         [Required(ErrorMessage = "Не указана причина выплаты.")]
-        public string Reason { get; set; } = "";
+        public string Reason { get; set; } = "Зарплата";
     }
 }

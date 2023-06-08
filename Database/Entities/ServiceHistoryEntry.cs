@@ -9,6 +9,7 @@ namespace AutoFix
     public class ServiceHistoryEntry : Entity, INotifyPropertyChanged
     {
         private Service? service;
+        private bool isCancelled;
 
         public int OrderId { get; set; }
         public RepairOrder? Order { get; set; }
@@ -27,7 +28,15 @@ namespace AutoFix
 
         public DateOnly StartDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
         public DateOnly? FinishDate { get; set; }
-        public bool IsCancelled { get; set; }
+        public bool IsCancelled
+        {
+            get => isCancelled;
+            set
+            {
+                isCancelled = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCancelled)));
+            }
+        }
         public string Comments { get; set; } = "";
 
         public event PropertyChangedEventHandler? PropertyChanged;

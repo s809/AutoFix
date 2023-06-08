@@ -10,10 +10,10 @@
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
     <StackPanel Margin="5">
-        <TextBlock>Название</TextBlock>
+        <TextBlock>Название<Run Foreground="Red">*</Run></TextBlock>
         <TextBox Margin="0 0 0 5" Text="{Binding Name}" />
 
-        <TextBlock>Стоимость, руб.</TextBlock>
+        <TextBlock>Стоимость, руб.<Run Foreground="Red">*</Run></TextBlock>
         <local:NumberBox Margin="0 0 0 5" Text="{Binding Price}" />
 
         <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">

@@ -13,8 +13,8 @@ namespace AutoFix
         public RepairOrderWindow(RepairOrder repairOrder) : base(repairOrder)
         {
             InitializeComponent();
-            (masterBox.ItemsSource, masterBox.SelectedIndex) = AppDbContext.GetAllEmployees().WithSelectedIndex(_entity.MasterId);
-            if (!App.LoggedInEmployee!.IsAdministrator)
+            (masterBox.ItemsSource, masterBox.SelectedIndex) = AppDbContext.GetAllMasters().WithSelectedIndex(_entity.MasterId);
+            if (!App.LoggedInEmployee!.HasPosition(EmployeePosition.ServiceManager))
                 masterBoxWithLabel.Visibility = Visibility.Collapsed;
 
             var services = AppDbContext.GetAllServices();

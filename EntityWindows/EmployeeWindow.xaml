@@ -4,6 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:AutoFix"
         mc:Ignorable="d"
         Title="Сотрудник" 
@@ -11,6 +12,10 @@
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Window.Resources>
         <local:DateOnlyConverter x:Key="dateConverter" />
+        <local:EmployeePositionVisibilityConverter x:Key="employeePositionVisibilityConverter" />
+        <local:EmployeePositionIsEnabledConverter x:Key="employeePositionIsEnabledConverter" />
+        <Binding x:Key="showAdminOnly" Source="{x:Static local:App.LoggedInEmployee}" Converter="{StaticResource employeePositionVisibilityConverter}" />
+        <Binding x:Key="enableAdminOnly" Source="{x:Static local:App.LoggedInEmployee}" Converter="{StaticResource employeePositionIsEnabledConverter}" />
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -25,7 +30,7 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Margin="3">
+        <StackPanel Margin="3" IsEnabled="{local:BindingResource enableAdminOnly}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -38,30 +43,30 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock>Фамилия</TextBlock>
+                <TextBlock>Фамилия<Run Foreground="Red">*</Run></TextBlock>
                 <TextBox Grid.Row="1" Text="{Binding Surname}" Margin="0,0,3,6" />
 
-                <TextBlock Grid.Column="1">Имя</TextBlock>
+                <TextBlock Grid.Column="1">Имя<Run Foreground="Red">*</Run></TextBlock>
                 <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Name}" Margin="0,0,3,6" />
 
-                <TextBlock Grid.Column="2">Отчество</TextBlock>
+                <TextBlock Grid.Column="2">Отчество<Run Foreground="Red">*</Run></TextBlock>
                 <TextBox Grid.Column="2" Grid.Row="1" Text="{Binding Patronymic}" Margin="0,0,3,6" />
             </Grid>
 
-            <TextBlock>Паспортные данные</TextBlock>
+            <TextBlock>Паспортные данные<Run Foreground="Red">*</Run></TextBlock>
             <TextBox Height="60" Text="{Binding PassportInfo}" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
         </StackPanel>
 
-        <StackPanel Margin="3" Grid.Column="1">
-            <TextBlock>Должность</TextBlock>
-            <TextBox x:Name="positionBox" Text="{Binding Position}" Margin="0,0,0,6" />
+        <StackPanel Margin="3" Grid.Column="1" IsEnabled="{local:BindingResource enableAdminOnly}">
+            <TextBlock>Должность<Run Foreground="Red">*</Run></TextBlock>
+            <ComboBox SelectedItem="{Binding Position}" ItemsSource="{Binding Source={x:Static local:EmployeePosition.Items}}" IsEnabled="{Binding AllowDestructiveActions}" Margin="0,0,0,6" />
 
-            <TextBlock>Оклад, руб.</TextBlock>
+            <TextBlock>Оклад, руб.<Run Foreground="Red">*</Run></TextBlock>
             <local:NumberBox Text="{Binding BaseSalary}" Margin="0,0,0,6" />
         </StackPanel>
 
-        <StackPanel Margin="3" Grid.Row="1">
-            <TextBlock>Дата наема</TextBlock>
+        <StackPanel Margin="3" Grid.Row="1" IsEnabled="{local:BindingResource enableAdminOnly}">
+            <TextBlock>Дата наема<Run Foreground="Red">*</Run></TextBlock>
             <DatePicker SelectedDate="{Binding StartDate, Converter={StaticResource dateConverter}}" Margin="0,0,0,6" />
 
             <StackPanel IsEnabled="{Binding AllowDestructiveActions}">
@@ -73,14 +78,12 @@
             </StackPanel>
         </StackPanel>
 
-        <StackPanel Margin="3" Grid.Row="2">
-            <TextBlock>Имя пользователя</TextBlock>
+        <StackPanel Margin="3" Grid.Row="2" IsEnabled="{local:BindingResource enableAdminOnly}">
+            <TextBlock>Имя пользователя<Run Foreground="Red">*</Run></TextBlock>
             <TextBox Text="{Binding Username}" Margin="0,0,0,6" />
 
-            <TextBlock>Пароль</TextBlock>
+            <TextBlock>Пароль<Run Foreground="Red">*</Run></TextBlock>
             <PasswordBox x:Name="passwordBox" Margin="0,0,0,6" PasswordChanged="PasswordBox_PasswordChanged" />
-
-            <CheckBox IsChecked="{Binding IsAdministrator}" IsEnabled="{Binding AllowDestructiveActions}">Администратор</CheckBox>
         </StackPanel>
 
         <DockPanel Margin="3" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
@@ -88,7 +91,10 @@
 
             <DataGrid ItemsSource="{Binding Payouts}" AutoGenerateColumns="False" CanUserSortColumns="False">
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Width="4*" Header="Дата">
+                    <DataGridTemplateColumn Width="4*">
+                        <DataGridTemplateColumn.Header>
+                            <TextBlock>Дата<Run Foreground="Red">*</Run></TextBlock>
+                        </DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Date, ConverterCulture=RU}" />
@@ -100,15 +106,23 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellEditingTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Width="3*" Header="Сумма, руб." Binding="{Binding Amount}" />
-                    <DataGridTextColumn Width="6*" Header="Причина" Binding="{Binding Reason}" />
+                    <DataGridTextColumn Width="3.2*" Binding="{Binding Amount}">
+                        <DataGridTextColumn.Header>
+                            <TextBlock>Сумма, руб.<Run Foreground="Red">*</Run></TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="6*" Binding="{Binding Reason}">
+                        <DataGridTextColumn.Header>
+                            <TextBlock>Причина<Run Foreground="Red">*</Run></TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
 
         <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Margin="3" Width="150" Height="30" Click="SaveButton_Click">Сохранить</Button>
-            <Button Margin="3" Width="150" Height="30" IsEnabled="{Binding AllowDestructiveActions}" Click="DeleteButton_Click">Удалить</Button>
+            <Button Margin="3" Width="150" Height="30" IsEnabled="{Binding AllowDestructiveActions}" Click="DeleteButton_Click" Visibility="{local:BindingResource showAdminOnly}">Удалить</Button>
         </StackPanel>
     </Grid>
 </local:EntityWindow>

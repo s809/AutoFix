@@ -25,7 +25,8 @@ namespace AutoFix
         public string Position { get; set; } = "";
         [Required(ErrorMessage = "Не указан оклад сотрудника.")]
         public decimal BaseSalary { get; set; }
-        public bool IsAdministrator { get; set; }
+
+        public bool HasPosition(params string[] positions) => positions.Append(EmployeePosition.Administrator).Contains(Position);
 
 
         [Required(ErrorMessage = "Не указана дата наема.")]
@@ -38,8 +39,8 @@ namespace AutoFix
         [Required(ErrorMessage = "Не указан пароль сотрудника.")]
         public string Password { get; set; } = "";
 
-        public bool IsLoggedIn => (App.LoggedInEmployee?.Id ?? 0) == Id;
-        public bool AllowDestructiveActions => !IsLoggedIn;
+        public bool IsCurrent => (App.LoggedInEmployee?.Id ?? 0) == Id;
+        public bool AllowDestructiveActions => !IsCurrent;
 
         public ObservableCollection<EmployeePayout> Payouts { get => payouts; set => payouts = value; }
         protected override IEnumerable<string> OnValidate()
@@ -77,6 +78,6 @@ namespace AutoFix
             return base.Delete();
         }
 
-        public override string ToString() => $"{FullName}{(IsLoggedIn ? " (Вы)" : "")}{(EndDate != null ? $" (Уволен {EndDate})" : "")}";
+        public override string ToString() => $"{FullName}{(IsCurrent ? " (Вы)" : "")}{(EndDate != null ? $" (Уволен {EndDate})" : "")}";
     }
 }

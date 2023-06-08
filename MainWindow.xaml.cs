@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,7 +28,7 @@ namespace AutoFix
             else
             {
                 MessageBox.Show("При первом запуске необходимо создать учетную запись сотрудника.", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
-                if (new EmployeeWindow(new Employee() { IsAdministrator = true }).ShowDialog() != true)
+                if (new EmployeeWindow(new Employee() { Position = EmployeePosition.Administrator }).ShowDialog() != true)
                 {
                     Close();
                     return;
@@ -35,6 +36,9 @@ namespace AutoFix
             }
 
             DataContext = App.LoggedInEmployee;
+            foreach (var tabControl in new[] { tabsRoot, tabsRepair, tabsWarehouse })
+                tabControl.SelectedIndex = tabControl.Items.Cast<TabItem>().TakeWhile(i => i.Visibility != Visibility.Visible).Count();
+
             Refresh();
         }
 
@@ -48,7 +52,7 @@ namespace AutoFix
             lvRepairOrders.ItemsSource = AppDbContext.GetAllRepairOrders();
             lvServices.ItemsSource = AppDbContext.GetAllServices();
 
-            (filterOrdersByEmployeeBox_list.Collection, filterOrdersByEmployeeBox.SelectedIndex) = AppDbContext.GetAllEmployees().WithSelectedIndex((filterOrdersByEmployeeBox.SelectedItem as Employee)?.Id, 1);
+            (filterOrdersByEmployeeBox_list.Collection, filterOrdersByEmployeeBox.SelectedIndex) = AppDbContext.GetAllMasters().WithSelectedIndex((filterOrdersByEmployeeBox.SelectedItem as Employee)?.Id, 1);
             FilterEmployees();
             FilterRepairOrders();
         }
@@ -95,7 +99,7 @@ namespace AutoFix
                 if (!allowedEmployee)
                     allowedEmployee |= ((RepairOrder)item).MasterId == ((Employee)filterOrdersByEmployeeBox.SelectedItem).Id;
 
-                if (!App.LoggedInEmployee!.IsAdministrator)
+                if (!App.LoggedInEmployee!.HasPosition(EmployeePosition.ServiceManager, EmployeePosition.Cashier, EmployeePosition.Accountant))
                     allowedEmployee &= ((RepairOrder)item).MasterId == App.LoggedInEmployee.Id;
 
                 return allowedFinishDate && allowedEmployee;

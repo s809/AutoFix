@@ -20,8 +20,8 @@ namespace AutoFix
             => optionsBuilder
             .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
             .EnableSensitiveDataLogging()
-            .UseNpgsql("Host=localhost;Database=AutoFix;Username=postgres;Password=root;Include Error Detail=true");
-            //.UseNpgsql("Host=localhost;Database=AutoFix;Username=postgres;Password=22345621;Include Error Detail=true");
+            //.UseNpgsql("Host=localhost;Database=AutoFix;Username=postgres;Password=root;Include Error Detail=true");
+            .UseNpgsql("Host=localhost;Database=AutoFix;Username=postgres;Password=22345621;Include Error Detail=true");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,12 +47,12 @@ namespace AutoFix
             return ctx.Employees.Count(e => !e.IsDeleted);
         }
 
-        public static ObservableCollection<Employee> GetAllEmployees()
+        public static ObservableCollection<Employee> GetAllMasters()
         {
             using var ctx = new AppDbContext();
             return new ObservableCollection<Employee>(
                 ctx.Employees
-                .Where(e => !e.IsDeleted && e.EndDate == null)
+                .Where(e => !e.IsDeleted && e.EndDate == null && e.Position == EmployeePosition.Mechanic)
                 .AsEnumerable()
                 .OrderBy(e => e.FullName)
             );
