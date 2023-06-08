@@ -20,8 +20,8 @@ namespace AutoFix
             => optionsBuilder
             .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
             .EnableSensitiveDataLogging()
-            //.UseNpgsql("Host=localhost;Database=AutoFix;Username=postgres;Password=root;Include Error Detail=true");
-            .UseNpgsql("Host=localhost;Database=AutoFix;Username=postgres;Password=22345621;Include Error Detail=true");
+            .UseNpgsql("Host=localhost;Database=AutoFix;Username=postgres;Password=root;Include Error Detail=true");
+            //.UseNpgsql("Host=localhost;Database=AutoFix;Username=postgres;Password=22345621;Include Error Detail=true");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

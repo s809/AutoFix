@@ -4,6 +4,33 @@
              xmlns:local="clr-namespace:AutoFix"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style TargetType="FrameworkElement" x:Key="roundedCorners">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="3" />
+                </Style>
+            </Style.Resources>
+        </Style>
+
+        <Style TargetType="TextBox" BasedOn="{StaticResource roundedCorners}" />
+        <Style TargetType="local:NumberBox" BasedOn="{StaticResource roundedCorners}" />
+        <Style TargetType="CheckBox" BasedOn="{StaticResource roundedCorners}" />
+        <Style TargetType="Button" BasedOn="{StaticResource roundedCorners}" />
+
+        <Style TargetType="TabItem">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="3,3,0,0" />
+                </Style>
+            </Style.Resources>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="3,3,0,0" />
+                </Style>
+            </Style.Resources>
+        </Style>
     </Application.Resources>
 </Application>
