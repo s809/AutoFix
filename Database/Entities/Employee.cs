@@ -75,6 +75,7 @@ namespace AutoFix
             UpdateCollection(ctx, ctx.EmployeePayouts.Where(ep => ep.EmployeeId == Id), Enumerable.Empty<EmployeePayout>());
             ctx.SaveChanges();
 
+            Payouts.Clear();
             return base.Delete();
         }
 

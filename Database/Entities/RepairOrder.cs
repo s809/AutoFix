@@ -41,6 +41,7 @@ namespace AutoFix
         }
 
         public int MasterId { get; set; }
+        [Required(ErrorMessage = "Не выбран мастер.")]
         public Employee? Master { get; set; }
         public bool IsCurrentEmployee => MasterId == App.LoggedInEmployee!.Id;
         public bool IsNotCurrentEmployee => !IsCurrentEmployee;
